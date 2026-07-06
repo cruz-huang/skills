@@ -1,0 +1,1634 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{报告标题}}</title>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --paper: #ffffff;
+      --text: #1f2937;
+      --muted: #667085;
+      --line: #e5e7eb;
+      --red: #b42318;
+      --red-bg: #fff1f0;
+      --orange: #f97316;
+      --orange-text: #c2410c;
+      --orange-bg: #fff7ed;
+      --yellow: #facc15;
+      --yellow-text: #facc15;
+      --yellow-bg: #fefce8;
+      --green: #027a48;
+      --green-status: #12b76a;
+      --green-bg: #ecfdf3;
+      --blue: #175cd3;
+      --blue-bg: #eff6ff;
+      --ink: #182230;
+      --soft: #fafbfc;
+      --gray-bg: #f3f4f6;
+      --shadow: 0 20px 54px rgba(16, 24, 40, 0.10);
+      --shadow-soft: 0 10px 26px rgba(16, 24, 40, 0.055);
+      --ring: 0 0 0 3px rgba(249, 115, 22, 0.16);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      background-image:
+        linear-gradient(180deg, #eef3f8 0, #f8fafc 360px, #f4f6f8 100%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      line-height: 1.65;
+    }
+
+    .page {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    .hero {
+      position: relative;
+      scroll-margin-top: 90px;
+      background: var(--paper);
+      border: 1px solid #dde3ea;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 7px;
+      background: linear-gradient(90deg, var(--green) 0 18%, var(--orange) 18% 78%, var(--yellow) 78% 100%);
+      z-index: 2;
+    }
+
+    .hero-main {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(310px, 0.78fr);
+      gap: 28px;
+      min-height: 352px;
+      padding: 44px 40px 36px;
+      background:
+        linear-gradient(135deg, rgba(255, 247, 237, 0.76) 0%, rgba(255, 255, 255, 0.96) 44%, #ffffff 100%);
+    }
+
+    .hero-main::after {
+      content: "RISK GATE";
+      position: absolute;
+      right: 34px;
+      bottom: 18px;
+      color: rgba(24, 34, 48, 0.04);
+      font-size: 68px;
+      font-weight: 900;
+      letter-spacing: 4px;
+      pointer-events: none;
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      width: fit-content;
+      margin: 0 0 10px;
+      padding: 4px 9px;
+      border: 1px solid #d7dee8;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.76);
+      color: #475467;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 38px;
+      line-height: 1.12;
+      letter-spacing: 0;
+      color: var(--ink);
+    }
+
+    h2, h3 { letter-spacing: 0; }
+
+    .verdict {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 18px 0 12px;
+      padding: 9px 14px;
+      border-radius: 8px;
+      background: var(--orange-bg);
+      color: var(--orange-text);
+      font-size: 20px;
+      font-weight: 800;
+      box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.22);
+    }
+
+    .lead {
+      max-width: 760px;
+      margin: 10px 0 0;
+      padding: 13px 15px;
+      border: 1px solid #fdba74;
+      border-left: 5px solid var(--orange);
+      border-radius: 8px;
+      background: rgba(255, 247, 237, 0.78);
+      color: #344054;
+      font-size: 16px;
+    }
+
+    .decision-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+      max-width: 780px;
+    }
+
+    .decision-card {
+      min-height: 86px;
+      padding: 13px 14px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: 0 6px 18px rgba(16, 24, 40, 0.045);
+    }
+
+    .decision-card span {
+      display: block;
+      margin-bottom: 4px;
+      color: #667085;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .decision-card strong {
+      display: block;
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.35;
+    }
+
+    .decision-card small {
+      display: block;
+      margin-top: 4px;
+      color: #667085;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .decision-card.warning {
+      border-color: #fdba74;
+      background: #fff7ed;
+    }
+
+    .decision-card.warning strong { color: var(--orange-text); }
+
+    .decision-card.good {
+      border-color: #bbf7d0;
+      background: #f0fdf4;
+    }
+
+    .decision-card.good strong { color: var(--green); }
+
+    .meta {
+      display: grid;
+      gap: 8px;
+      padding: 18px;
+      border: 1px solid #d9e0e8;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.94);
+      color: #344054;
+      font-size: 14px;
+      box-shadow: var(--shadow-soft);
+      align-self: stretch;
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta::before {
+      content: "报告信息";
+      display: block;
+      margin-bottom: 2px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #edf1f5;
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .meta div {
+      display: grid;
+      grid-template-columns: 88px minmax(0, 1fr);
+      gap: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .meta div:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .meta strong { color: var(--text); }
+    .meta span {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .scorebar {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(120px, 1fr));
+      gap: 14px;
+      padding: 20px 34px 26px;
+      background: #ffffff;
+      border-top: 1px solid var(--line);
+    }
+
+    .metric {
+      position: relative;
+      padding: 16px 16px 15px;
+      border: 1px solid #e1e7ef;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #ffffff 0%, #fbfcfd 100%);
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(16, 24, 40, 0.04);
+    }
+
+    .metric::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 6px;
+      background: #d0d5dd;
+    }
+
+    .metric b {
+      display: block;
+      font-size: 31px;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .metric.p0 b { color: var(--green); }
+    .metric.p1 b { color: var(--orange); }
+    .metric.p2 b { color: var(--yellow); }
+    .metric.ok b { color: var(--blue); }
+    .metric.note b { color: #475467; }
+    .metric.p0::before { background: var(--green); }
+    .metric.p0-risk b { color: var(--red); }
+    .metric.p0-risk::before { background: var(--red); }
+    .metric.p1::before { background: var(--orange); }
+    .metric.p2::before { background: var(--yellow); }
+    .metric.ok::before { background: var(--blue); }
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 18px 0;
+      padding: 10px;
+      border: 1px solid #dde3ea;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
+    }
+
+    .toolbar-left,
+    .toolbar-right {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      color: #344054;
+      cursor: pointer;
+      font: inherit;
+      font-size: 14px;
+      padding: 8px 12px;
+      transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+    }
+
+    button:hover,
+    button.active {
+      border-color: #98a2b3;
+      background: #f9fafb;
+      color: #111827;
+      transform: translateY(-1px);
+    }
+
+    button:focus-visible {
+      outline: none;
+      box-shadow: var(--ring);
+    }
+
+    .section {
+      margin: 20px 0;
+      scroll-margin-top: 90px;
+      padding: 24px;
+      border: 1px solid #dde3ea;
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .section h2 {
+      margin: 0 0 14px;
+      font-size: 24px;
+      color: var(--ink);
+    }
+
+    .fix-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .fix-card,
+    .issue-card {
+      border: 1px solid #fed7aa;
+      border-left: 6px solid var(--orange);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #ffffff 0%, #fffaf5 100%);
+      padding: 17px 18px;
+      box-shadow: 0 2px 10px rgba(16, 24, 40, 0.045);
+    }
+
+    .fix-card {
+      position: relative;
+      padding: 20px 20px 18px 22px;
+    }
+
+    .fix-card::before {
+      content: "";
+      position: absolute;
+      top: 18px;
+      left: -6px;
+      width: 6px;
+      height: 34px;
+      border-radius: 0 6px 6px 0;
+      background: var(--orange);
+    }
+
+    .fix-card h3,
+    .issue-card h3 {
+      margin: 0 0 8px;
+      color: var(--ink);
+      font-size: 18px;
+    }
+
+    .fix-card h3 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      color: var(--orange-text);
+    }
+
+    .fix-card h3::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      flex: none;
+      border-radius: 999px;
+      background: var(--orange);
+      box-shadow: 0 0 0 4px var(--orange-bg);
+    }
+
+    .fix-card p,
+    .issue-card p {
+      margin: 6px 0;
+      font-size: 16px;
+    }
+
+    .field-label {
+      display: inline-flex;
+      align-items: center;
+      margin-right: 6px;
+      font-size: 16px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .fix-card p:has(.field-label.loc),
+    .issue-card p:has(.field-label.loc) {
+      color: #667085;
+    }
+
+    .fix-card p:has(.field-label.problem),
+    .issue-card p:has(.field-label.problem) {
+      color: var(--ink);
+    }
+
+    .fix-card p:has(.field-label.problem) {
+      color: var(--orange-text);
+      font-weight: 700;
+    }
+
+    .fix-card p:has(.field-label.suggest),
+    .issue-card p:has(.field-label.suggest) {
+      color: var(--blue);
+      font-weight: 650;
+    }
+
+    .issue-card.p2 {
+      border-left-color: var(--yellow);
+      border-color: #fde68a;
+      background: linear-gradient(180deg, #ffffff 0%, #fffbea 100%);
+    }
+
+    .issue-card.p2 h3 {
+      color: var(--yellow-text);
+      font-weight: 900;
+    }
+
+    .issue-card.p2 p:has(.field-label.problem) {
+      color: var(--yellow-text);
+      font-weight: 700;
+    }
+
+    .issue-card.p0 {
+      border: 2px solid var(--red);
+      border-left: 8px solid var(--red);
+      background: #ffffff;
+      box-shadow: 0 2px 12px rgba(180, 35, 24, 0.12);
+    }
+
+    .issue-card.p0 h3 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--red);
+      font-weight: 900;
+    }
+
+    .issue-card.p0 h3::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      flex: none;
+      border-radius: 999px;
+      background: var(--red);
+      box-shadow: 0 0 0 4px rgba(180, 35, 24, 0.14);
+    }
+
+    .issue-card.p0 p:has(.field-label.problem) {
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    .next-card {
+      border: 1px solid #dbeafe;
+      border-left: 6px solid #93c5fd;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+      padding: 17px 18px;
+      box-shadow: 0 2px 10px rgba(16, 24, 40, 0.045);
+    }
+
+    .next-card h3 {
+      margin: 0 0 10px;
+      color: #2563eb;
+      font-size: 18px;
+    }
+
+    .next-card ol {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: next-step;
+    }
+
+    .next-card li {
+      counter-increment: next-step;
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr);
+      gap: 8px;
+      align-items: start;
+      margin: 8px 0;
+      color: #344054;
+      font-weight: 650;
+    }
+
+    .next-card li::before {
+      content: counter(next-step);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #2563eb;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 8px;
+      background: var(--gray-bg);
+      color: #475467;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .tag.red { background: var(--red-bg); color: var(--red); }
+    .tag.orange { background: var(--orange-bg); color: var(--orange-text); }
+    .tag.yellow { background: var(--yellow-bg); color: var(--yellow-text); }
+    .tag.green { background: var(--green-bg); color: var(--green); }
+    .tag.blue { background: var(--blue-bg); color: var(--blue); }
+
+    details {
+      margin: 14px 0;
+      scroll-margin-top: 90px;
+      border: 1px solid #dde3ea;
+      border-radius: 8px;
+      background: var(--paper);
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+    }
+
+    summary {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 20px;
+      cursor: pointer;
+      font-weight: 800;
+      list-style: none;
+      color: var(--ink);
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    summary::after {
+      content: "展开";
+      flex: none;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    details[open] summary {
+      border-bottom: 1px solid #e4e9ef;
+      background: linear-gradient(180deg, #fbfcfd 0%, #ffffff 100%);
+    }
+
+    details[open] summary::after { content: "收起"; }
+
+    .detail-body { padding: 20px; }
+
+    .summary-title {
+      min-width: 0;
+      font-size: 18px;
+    }
+
+    .summary-status {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 14px 0;
+      font-size: 14px;
+      background: #ffffff;
+      border: 1px solid #e3e8ef;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(16, 24, 40, 0.045);
+    }
+
+    th, td {
+      border: 0;
+      border-bottom: 1px solid #e7ecf2;
+      padding: 15px 15px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #344054;
+      font-weight: 800;
+    }
+
+    tbody tr:nth-child(even) { background: #fbfcfd; }
+    tbody tr:hover { background: #f8fbff; }
+    tbody tr:last-child td { border-bottom: 0; }
+
+    td .tag {
+      gap: 8px;
+      padding: 0;
+      background: transparent;
+      color: #344054;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    td .tag::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      flex: none;
+      border-radius: 999px;
+      background: #98a2b3;
+      box-shadow: 0 0 0 4px rgba(152, 162, 179, 0.14);
+    }
+
+    td .tag.green::before { background: #12b76a; box-shadow: 0 0 0 4px rgba(18, 183, 106, 0.14); }
+    td .tag.red::before { background: #ef4444; box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.14); }
+    td .tag.orange::before { background: var(--orange); box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15); }
+    td .tag.yellow::before { background: var(--yellow); box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.18); }
+
+    .status-table th:first-child,
+    .status-table td:first-child {
+      width: 56px;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    .table-status {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      font-weight: 900;
+      color: transparent;
+      font-size: 0;
+    }
+
+    .table-status::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      flex: none;
+      border-radius: 999px;
+      background: #98a2b3;
+      box-shadow: 0 0 0 4px rgba(152, 162, 179, 0.14);
+    }
+
+    .table-status.pass, .conclusion-pass { color: var(--green-status); }
+    .table-status.p0, .conclusion-p0 { color: var(--red); }
+    .table-status.p1, .conclusion-p1 { color: var(--orange-text); }
+    .table-status.p2, .conclusion-p2 { color: var(--yellow-text); }
+    .table-status.note, .conclusion-note { color: #667085; }
+    .table-status.pass::before { background: var(--green-status); box-shadow: 0 0 0 4px rgba(18, 183, 106, 0.14); }
+    .table-status.p0::before { background: #ef4444; box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.14); }
+    .table-status.p1::before { background: var(--orange); box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15); }
+    .table-status.p2::before { background: var(--yellow); box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.18); }
+
+    .conclusion-pass,
+    .conclusion-p0,
+    .conclusion-p1,
+    .conclusion-p2,
+    .conclusion-note {
+      font-weight: 760;
+    }
+
+    .risk-row-p0 td:not(:first-child) {
+      color: var(--red);
+      font-weight: 650;
+    }
+
+    .risk-row-p1 td:not(:first-child) {
+      color: var(--orange-text);
+      font-weight: 650;
+    }
+
+    .risk-row-p2 td:not(:first-child) {
+      color: var(--yellow-text);
+      font-weight: 650;
+    }
+
+    .merged-action {
+      display: grid;
+      gap: 3px;
+    }
+
+    .merged-action .issue-ref {
+      font-weight: 800;
+    }
+
+    .merged-action .advice-text {
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    code {
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: #eef2f6;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.92em;
+    }
+
+    .muted { color: var(--muted); }
+
+    @media (max-width: 820px) {
+      body {
+        background: #f5f7fa;
+        font-size: 15px;
+        line-height: 1.58;
+      }
+
+      .page {
+        width: 100%;
+        max-width: none;
+        padding: 0 0 28px;
+      }
+
+      .hero {
+        border-right: 0;
+        border-left: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .hero-main {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        min-height: 0;
+        padding: 24px 16px 18px;
+        background: linear-gradient(180deg, #ffffff 0%, #fffaf5 100%);
+      }
+
+      .hero-main::after { display: none; }
+      .eyebrow { font-size: 12px; }
+
+      h1 {
+        font-size: 27px;
+        line-height: 1.15;
+      }
+
+      .verdict {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        font-size: 18px;
+      }
+
+      .lead {
+        margin-top: 6px;
+        padding: 12px 13px;
+        font-size: 15px;
+      }
+
+      .decision-strip {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .decision-card {
+        min-height: 0;
+        padding: 11px 12px;
+      }
+
+      .meta {
+        padding: 14px;
+        font-size: 13px;
+        box-shadow: none;
+      }
+
+      .meta div {
+        grid-template-columns: 78px minmax(0, 1fr);
+        gap: 8px;
+      }
+
+      .scorebar {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(138px, 42vw);
+        grid-template-columns: none;
+        gap: 10px;
+        padding: 14px 16px 18px;
+        overflow-x: auto;
+        scroll-snap-type: x proximity;
+      }
+
+      .scorebar::-webkit-scrollbar,
+      .toolbar::-webkit-scrollbar {
+        display: none;
+      }
+
+      .metric {
+        scroll-snap-align: start;
+        padding: 12px 12px 11px;
+      }
+
+      .metric b { font-size: 28px; }
+
+      .toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        margin: 0;
+        padding: 10px 12px;
+        border-right: 0;
+        border-left: 0;
+        border-radius: 0;
+        overflow-x: auto;
+      }
+
+      .toolbar-left {
+        flex-wrap: nowrap;
+        gap: 8px;
+      }
+
+      button {
+        flex: 0 0 auto;
+        padding: 8px 10px;
+        font-size: 14px;
+      }
+
+      .section,
+      details {
+        margin: 12px 10px;
+        border-radius: 8px;
+      }
+
+      .section { padding: 16px; }
+      .section h2 { font-size: 21px; }
+
+      summary {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+        padding: 14px 14px;
+      }
+
+      summary::after { display: none; }
+      .summary-title { font-size: 16px; }
+      .summary-status .tag { font-size: 12px; }
+      .detail-body { padding: 12px; }
+
+      .fix-card,
+      .issue-card,
+      .next-card {
+        padding: 14px 14px 14px 16px;
+      }
+
+      .fix-card h3,
+      .issue-card h3,
+      .next-card h3 {
+        font-size: 17px;
+      }
+
+      .fix-card p,
+      .issue-card p {
+        font-size: 15px;
+      }
+
+      .field-label {
+        font-size: 15px;
+      }
+
+      table,
+      thead,
+      tbody,
+      tr,
+      th,
+      td {
+        display: block;
+      }
+
+      table {
+        margin: 10px 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+      }
+
+      tbody tr {
+        margin: 0 0 10px;
+        padding: 10px 12px;
+        border: 1px solid #e3e8ef;
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 4px 14px rgba(16, 24, 40, 0.045);
+      }
+
+      tbody tr:nth-child(even),
+      tbody tr:hover {
+        background: #ffffff;
+      }
+
+      td {
+        display: grid;
+        grid-template-columns: 86px minmax(0, 1fr);
+        gap: 8px;
+        align-items: start;
+        padding: 7px 0;
+        border-bottom: 1px solid #eef2f6;
+        white-space: normal;
+      }
+
+      td:last-child { border-bottom: 0; }
+
+      td::before {
+        content: attr(data-label);
+        color: #667085;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .status-table td:first-child {
+        width: auto;
+        padding-bottom: 4px;
+        text-align: left;
+      }
+
+      .status-table td:first-child::before {
+        display: none;
+      }
+
+      .table-status {
+        justify-content: flex-start;
+      }
+
+    }
+
+    @media print {
+      body { background: #ffffff; }
+      .page { max-width: none; padding: 0; }
+      .toolbar { display: none !important; }
+      .hero, .section, details { box-shadow: none; break-inside: avoid; }
+      details:not([open]) .detail-body { display: block; }
+      summary::after { content: ""; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <!--
+      使用说明：
+      1. 本文件是 HTML 报告空骨架，占位符用 {{...}} 标记；生成正式报告时替换占位符。
+      2. 无某等级问题时，删除对应 P0/P1/P2 details 区块和导航按钮。
+      3. 结果标签颜色：green=通过，red=P0，orange=P1，yellow=P2，无颜色=待填写/说明。
+      4. 不要改 CSS、JS、首屏结构、导航结构、问题卡结构和验收卡表格字段。
+    -->
+    <header id="top" class="hero">
+      <div class="hero-main">
+        <div class="hero-copy">
+          <p class="eyebrow">{{项目名称}} · {{项目编号}}</p>
+          <h1>投标文件检查报告<br>{{检查阶段}}</h1>
+          <p class="verdict">总论：{{通过/有条件通过/不通过}}</p>
+          <p class="lead">{{总论摘要：写明 P0/P1/P2 数量、是否建议提交、最关键整改方向}}</p>
+          <div class="decision-strip">
+            <div class="decision-card warning">
+              <span>提交判断</span>
+              <strong>{{建议提交/处理后提交/不建议提交}}</strong>
+              <small>{{提交判断说明}}</small>
+            </div>
+            <div class="decision-card good">
+              <span>阻断风险</span>
+              <strong>{{P0 状态摘要}}</strong>
+              <small>{{阻断风险说明}}</small>
+            </div>
+            <div class="decision-card">
+              <span>下一步动作</span>
+              <strong>{{下一步动作摘要}}</strong>
+              <small>{{复查范围或交付动作}}</small>
+            </div>
+          </div>
+          <div class="tags">
+            <span class="tag red">{{P0 标签：如有 P0 必须整改；无 P0 可删除}}</span>
+            <span class="tag orange">{{P1 标签}}</span>
+            <span class="tag yellow">{{P2 标签}}</span>
+            <span class="tag green">{{通过/无阻断标签}}</span>
+            <span class="tag blue">{{视觉核验/阶段标签}}</span>
+          </div>
+        </div>
+        <aside class="meta" aria-label="报告信息">
+          <div><strong>报告版本</strong><span>{{报告版本}}</span></div>
+          <div><strong>检查阶段</strong><span>{{章节版本/初稿版本/定稿版本/盖章版本}}</span></div>
+          <div><strong>检查轮次</strong><span>{{first_check/recheck/spot_check/final_gate}}</span></div>
+          <div><strong>招标人</strong><span>{{招标人名称}}</span></div>
+          <div><strong>投标人</strong><span>{{投标人名称}}</span></div>
+          <div><strong>招标文件</strong><span>{{招标文件名}}</span></div>
+          <div><strong>检查对象</strong><span>{{检查对象文件名}}</span></div>
+          <div><strong>PDF页数</strong><span>{{PDF 页数或不适用}}</span></div>
+          <div><strong>核验方式</strong><span>{{model_vision/recognizer_tool/hybrid/text_only_limited}}</span></div>
+          <div><strong>验收卡覆盖率摘要</strong><span>{{已完成项/总项、受限未执行项、未回填项、是否闭环}}</span></div>
+        </aside>
+      </div>
+      <div class="scorebar">
+        <div class="metric p0"><b>{{P0数量}}</b><span>P0 废标/阻断</span></div>
+        <div class="metric p1"><b>{{P1数量}}</b><span>P1 重大风险</span></div>
+        <div class="metric p2"><b>{{P2数量}}</b><span>P2 一般优化</span></div>
+        <div class="metric ok"><b>{{已完成检查项数}}</b><span>已完成检查项</span></div>
+        <div class="metric note"><b>{{受限未执行项数}}</b><span>受限未执行</span></div>
+      </div>
+    </header>
+
+    <nav class="toolbar" aria-label="报告目录">
+      <div class="toolbar-left">
+        <button type="button" class="jump active" data-target="p0-section">P0 整改</button>
+        <button type="button" class="jump" data-target="p1-section">P1 整改</button>
+        <button type="button" class="jump" data-target="p2-section">P2 优化</button>
+        <button type="button" class="jump" data-target="next-section">下一步</button>
+        <button type="button" class="jump" data-target="g01-section">一致性</button>
+        <button type="button" class="jump" data-target="g02-section">追溯</button>
+        <button type="button" class="jump" data-target="g03-section">图片</button>
+        <button type="button" class="jump" data-target="g04-section">格式签章</button>
+        <button type="button" class="jump" data-target="g05-section">页码文字</button>
+        <button type="button" class="jump" data-target="g06-section">废标红线</button>
+        <button type="button" class="jump" data-target="d00-section">大纲</button>
+        <button type="button" class="jump" data-target="d01-section">报价</button>
+        <button type="button" class="jump" data-target="d02-section">商偏</button>
+        <button type="button" class="jump" data-target="d03-section">技偏</button>
+        <button type="button" class="jump" data-target="d04-section">团队</button>
+        <button type="button" class="jump" data-target="d05-section">业绩</button>
+        <button type="button" class="jump" data-target="d06-section">资格</button>
+        <button type="button" class="jump" data-target="d07-section">授权售后</button>
+        <button type="button" class="jump" data-target="d08-section">技术证明</button>
+        <button type="button" class="jump" data-target="d09-section">方案</button>
+        <button type="button" class="jump" data-target="d10-section">承诺</button>
+        <button type="button" class="jump" data-target="d11-section">交验质保</button>
+        <button type="button" class="jump" data-target="pre-section">前置</button>
+      </div>
+    </nav>
+
+    <details id="p0-section" open>
+      <summary><span class="summary-title">当前问题：P0 废标/阻断项</span><span class="summary-status"><span class="tag red">{{P0数量}} 项需整改</span></span></summary>
+      <div class="detail-body">
+        <div class="fix-list">
+          <article class="issue-card p0">
+            <h3>P0-01 {{P0问题标题}}</h3>
+            <p><span class="field-label loc">位置</span>{{物理页/页脚页码/章节/附件；对应检查 ID}}</p>
+            <p><span class="field-label problem">问题</span>{{P0问题描述}}</p>
+            <p class="copy-text"><span class="field-label suggest">建议</span>{{P0整改建议}}</p>
+          </article>
+        </div>
+      </div>
+    </details>
+
+    <details id="p1-section" open>
+      <summary><span class="summary-title">当前问题：P1 重大风险</span><span class="summary-status"><span class="tag orange">{{P1数量}} 项需整改</span></span></summary>
+      <div class="detail-body">
+        <div class="fix-list">
+          <article class="fix-card">
+            <h3>P1-01 {{P1问题标题}}</h3>
+            <p><span class="field-label loc">位置</span>{{物理页/页脚页码/章节/附件；对应检查 ID}}</p>
+            <p><span class="field-label problem">问题</span>{{P1问题描述}}</p>
+            <p class="copy-text"><span class="field-label suggest">建议</span>{{P1整改建议}}</p>
+          </article>
+        </div>
+      </div>
+    </details>
+
+    <details id="p2-section" open>
+      <summary><span class="summary-title">P2 一般优化</span><span class="summary-status"><span class="tag yellow">{{P2数量}} 项优化</span></span></summary>
+      <div class="detail-body">
+        <article class="issue-card p2">
+          <h3>P2-01 {{P2问题标题}}</h3>
+          <p><span class="field-label loc">位置</span>{{物理页/页脚页码/章节/附件；对应检查 ID}}</p>
+          <p><span class="field-label problem">问题</span>{{P2问题描述}}</p>
+          <p><span class="field-label suggest">建议</span>{{P2整改建议}}</p>
+        </article>
+      </div>
+    </details>
+
+    <section id="next-section" class="section">
+      <h2>下一步建议</h2>
+      <article class="next-card">
+        <h3>建议整改顺序</h3>
+        <ol>
+          <li>{{第一步：优先处理 P0 或最高风险 P1}}</li>
+          <li>{{第二步：处理剩余 P1 和关键一致性问题}}</li>
+          <li>{{第三步：处理 P2、重新导出 PDF 并做最小复查}}</li>
+        </ol>
+      </article>
+    </section>
+
+
+    <details id="g01-section" open>
+      <summary><span class="summary-title">G01 核心信息一致性</span><span class="summary-status"><span class="tag">{{本组状态摘要}}</span></span></summary>
+      <div class="detail-body">
+        <table>
+          <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+          <tbody>
+<tr><td><span class="table-status pass" aria-label="通过"></span></td><td>G01-01</td><td>投标主体一致</td><td>{{实际检查内容：核对封面、投标函、报价表、偏离表、营业执照、授权书、盖章主体。；填写本轮实际核验情况}}</td><td>{{通过范本：通过}}</td></tr>
+<tr><td><span class="table-status p0" aria-label="P0"></span></td><td>G01-02</td><td>项目名称、招标编号、招标人一致</td><td>{{实际检查内容：核对封面、投标函、授权售后材料、承诺函、报价表、证明材料。；填写本轮实际核验情况}}</td><td>{{P0范本：证据位置；P0-01：问题简述；建议：整改建议}}</td></tr>
+<tr><td><span class="table-status p1" aria-label="P1"></span></td><td>G01-03</td><td>高风险字段全篇一致</td><td>{{实际检查内容：核对报价、税率、数量、型号、BOM、交付期、质保期、付款、验收。；填写本轮实际核验情况}}</td><td>{{P1范本：证据位置；P1-01：问题简述；建议：整改建议}}</td></tr>
+<tr><td><span class="table-status p2" aria-label="P2"></span></td><td>G01-04</td><td>已提供材料不自相矛盾</td><td>{{实际检查内容：检查附件材料与正文、偏离表、证明材料索引是否冲突。；填写本轮实际核验情况}}</td><td>{{P2范本：证据位置；P2-01：问题简述；建议：整改建议}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details id="g02-section" open>
+      <summary><span class="summary-title">G02 证据可追溯性</span><span class="summary-status"><span class="tag">{{本组状态摘要}}</span></span></summary>
+      <div class="detail-body">
+        <table>
+          <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+          <tbody>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G02-01</td><td>响应和证明有最小定位</td><td>{{实际检查内容：核对章节、页码、图号、附件标题、证明材料名是否可定位。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G02-02</td><td>不编造页码和证明编号</td><td>{{实际检查内容：检查页码、截图编号、证书编号、附件编号是否真实存在。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G02-03</td><td>招标要求可映射到检查项</td><td>{{实际检查内容：废标项、资格项、评分项、技术参数、商务条款、递交要求至少映射到一项检查卡。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G02-04</td><td>问题可反查验收卡</td><td>{{实际检查内容：每个 P0/P1/P2 问题绑定检查 ID、证据位置和整改建议。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G02-05</td><td>最小返工路径清楚</td><td>{{实际检查内容：每个问题说明应回到资料、写作、方案、DOCX、盖章或主控哪个源头，并限定复查范围。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details id="g03-section" open>
+      <summary><span class="summary-title">G03 图片/扫描件可读性</span><span class="summary-status"><span class="tag">{{本组状态摘要}}</span></span></summary>
+      <div class="detail-body">
+        <table>
+          <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+          <tbody>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G03-01</td><td>图片类证明文件清晰可读</td><td>{{实际检查内容：核验证书、合同、授权书、售后函、截图、身份证、社保、个税等关键字段可读。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G03-02</td><td>图片方向和裁切正常</td><td>{{实际检查内容：核验横置、倒置、裁切、变形、缩放过小等影响阅读的问题。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G03-03</td><td>签章、签名、日期可见事实已核验</td><td>{{实际检查内容：按视觉模式核验 PDF 内可见事实；无视觉时标为受限；不判断 CA 有效性和外部真伪。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G03-04</td><td>图片证明与正文描述一致</td><td>{{实际检查内容：核对证书等级、有效期、主体、型号、日期、项目名称与正文是否一致。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details id="g04-section" open>
+      <summary><span class="summary-title">G04 固定格式、签章、日期底线</span><span class="summary-status"><span class="tag">{{本组状态摘要}}</span></span></summary>
+      <div class="detail-body">
+        <table>
+          <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+          <tbody>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G04-01</td><td>招标固定格式已识别</td><td>{{实际检查内容：从招标“投标文件格式”和解析产物核对，不只看目录命中。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G04-02</td><td>固定格式未被破坏</td><td>{{实际检查内容：核对标题、表头、字段顺序、固定原文、下划线、说明和注释。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G04-03</td><td>签字位、盖章位、日期位正确</td><td>{{实际检查内容：核对位置未移动、未空缺；需要手签的位置不得只打印姓名冒充签字；电子签章只核对 PDF 可见事实。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G04-04</td><td>固定格式材料分页和视觉结构可读</td><td>{{实际检查内容：核对签章区、表格、落款、身份证位置、日期位置不跨页变形。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details id="g05-section" open>
+      <summary><span class="summary-title">G05 页码编号、文字质量、内部痕迹</span><span class="summary-status"><span class="tag">{{本组状态摘要}}</span></span></summary>
+      <div class="detail-body">
+        <table>
+          <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+          <tbody>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G05-01</td><td>页码和目录连续一致</td><td>{{实际检查内容：核对 PDF 物理页、页脚页码、目录页码、附件引用页码，不得断页、跳页、重号、倒序或缺失。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G05-02</td><td>编号连续</td><td>{{实际检查内容：检查大纲标题、方案分项、表格行号、参数序号、图号、表号、附件编号。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G05-03</td><td>中文文本和标点质量</td><td>{{实际检查内容：正式中文文本优先中文标点；固定格式原文、型号、网址、邮箱、证书原文不得误改。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G05-04</td><td>内部痕迹清除</td><td>{{实际检查内容：检索 BID_META、DOCX_FORMAT、TODO、待补、资料路径、内部说明等。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G05-05</td><td>表格和分页可读</td><td>{{实际检查内容：检查跨页表头、版心、边框、文字挤压、标题孤行、附件标题与图片对应。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details id="g06-section" open>
+      <summary><span class="summary-title">G06 废标/否决项检查</span><span class="summary-status"><span class="tag">{{本组状态摘要}}</span></span></summary>
+      <div class="detail-body">
+        <table>
+          <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+          <tbody>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G06-01</td><td>废标/否决条款已提取</td><td>{{实际检查内容：从招标文件提取废标、否决投标、无效投标、不予受理、资格/符合性审查不通过、实质性不响应等条款，形成逐项清单。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G06-02</td><td>资格性废标项核对</td><td>{{实际检查内容：核对主体资格、资质证书、信用记录、税收社保财务证明、授权代表、联合体限制等资格性否决项。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G06-03</td><td>符合性/商务废标项核对</td><td>{{实际检查内容：核对投标函、报价、商务偏离、合同条款、投标有效期、保证金/保函、递交要求等符合性否决项。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G06-04</td><td>技术实质性负偏离核对</td><td>{{实际检查内容：核对关键技术条款、★/▲条款、证明材料、参数响应和技术偏离表是否触发实质性负偏离。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G06-05</td><td>固定格式、签章、日期和递交红线核对</td><td>{{实际检查内容：核对固定格式破坏、签字盖章日期缺失、法定代表人/授权委托、密封/加密/上传/递交要求等红线。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>G06-06</td><td>P0 问题映射和清零状态</td><td>{{实际检查内容：将触发废标/否决风险的问题映射到 P0；无 P0 时写明逐项核对未触发，存在 P0 时不得建议提交。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details id="d00-section" open>
+      <summary><span class="summary-title">D00 投标大纲</span><span class="summary-status"><span class="tag">{{本组状态摘要}}</span></span></summary>
+      <div class="detail-body">
+        <table>
+          <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+          <tbody>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D00-01</td><td>招标大纲要求已识别</td><td>{{实际检查内容：判断招标是否有分册、章节、目录、投标文件格式或固定格式标题要求；必须排除目录页同名误判。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D00-02</td><td>强制大纲与招标一致</td><td>{{实际检查内容：有强制要求时，核对标题、顺序、层级、分册、固定格式名称是否与招标一致。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D00-03</td><td>自拟大纲覆盖完整</td><td>{{实际检查内容：无强制大纲时，核对资格、报价、商务、技术、方案、证明、授权售后、承诺签章等入口完整。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D00-04</td><td>评分项有章节入口</td><td>{{实际检查内容：核对评分项、加分项、证明材料项是否能定位到明确章节、小节或附件入口。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D00-05</td><td>下级标题来源合理</td><td>{{实际检查内容：二级/三级标题只能来自招标条款、评分项、固定格式/资料项或方案必要构成，不为丰富而新增无关标题。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D00-06</td><td>大纲与正文/目录一致</td><td>{{实际检查内容：核对目录标题、正文标题、页码、附件索引、证明材料入口一致。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D00-07</td><td>大纲不制造口径风险</td><td>{{实际检查内容：核对服务期、工期、交货期、验收、质保、付款等标题不误导或冲突。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details id="d01-section" open>
+      <summary><span class="summary-title">D01 报价</span><span class="summary-status"><span class="tag">{{本组状态摘要}}</span></span></summary>
+      <div class="detail-body">
+        <table>
+          <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+          <tbody>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D01-01</td><td>限价未超</td><td>{{实际检查内容：对照最高限价、控制价、单项限价、费率上限。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D01-02</td><td>总价一致</td><td>{{实际检查内容：核对投标函、开标一览表、总价表、报价汇总表。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D01-03</td><td>大小写金额一致</td><td>{{实际检查内容：逐处比对金额大小写和单位。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D01-04</td><td>税率税额可复算</td><td>{{实际检查内容：复算含税、不含税、税率、税额关系。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D01-05</td><td>分项合计等于总价</td><td>{{实际检查内容：复算数量、单价、合价、分项合计。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D01-06</td><td>数量、型号、配置与技术响应一致</td><td>{{实际检查内容：核对设备、软件、授权、服务、配件数量和 BOM。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D01-07</td><td>报价范围覆盖招标要求</td><td>{{实际检查内容：检查运输、保险、安装、调试、培训、文档、验收、质保、售后。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D01-08</td><td>维护费或维保比例符合限制</td><td>{{实际检查内容：核对比例、基数、金额和计算口径。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details id="d02-section" open>
+      <summary><span class="summary-title">D02 商务偏离表</span><span class="summary-status"><span class="tag">{{本组状态摘要}}</span></span></summary>
+      <div class="detail-body">
+        <table>
+          <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+          <tbody>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D02-01</td><td>商务条款覆盖完整</td><td>{{实际检查内容：覆盖报价、付款、交付、验收、质保、售后、合同责任、有效期、签章授权。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D02-02</td><td>条目号来自招标原文</td><td>{{实际检查内容：不使用响应矩阵编号、自建编号替代招标条款号。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D02-03</td><td>响应栏先写明确结论</td><td>{{实际检查内容：检查是否先写“我司完全响应。”或“完全响应，无偏离。”。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D02-04</td><td>无实质性负偏离</td><td>{{实际检查内容：对照 ★、实质性商务条款、不得偏离条款。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D02-05</td><td>证明位置可追溯</td><td>{{实际检查内容：指向最小章节、附件标题、图号、资料名或最终 PDF 页码。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D02-06</td><td>高风险商务字段一致</td><td>{{实际检查内容：报价、税率、维护费、付款比例、交付期、质保期不得冲突。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details id="d03-section" open>
+      <summary><span class="summary-title">D03 技术偏离表</span><span class="summary-status"><span class="tag">{{本组状态摘要}}</span></span></summary>
+      <div class="detail-body">
+        <table>
+          <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+          <tbody>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D03-01</td><td>技术要求逐条覆盖</td><td>{{实际检查内容：对照技术条款、重要技术条款响应表和响应矩阵。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D03-02</td><td>重点条款覆盖</td><td>{{实际检查内容：★、▲、废标项、评分项、证明材料条款不得漏项。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D03-03</td><td>证明材料位置完整</td><td>{{实际检查内容：每个要求提供证明的条款有截图、彩页、证书、检测报告、官网材料等位置。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D03-04</td><td>限制词未删改</td><td>{{实际检查内容：检查“不少于”“不低于”“支持”“兼容”“提供证明”等。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D03-05</td><td>正偏离有真实证据</td><td>{{实际检查内容：优于招标必须有可追溯证明。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D03-06</td><td>BOM/型号/数量/配置一致</td><td>{{实际检查内容：核对报价清单、技术响应、产品证明、截图、彩页。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details id="d04-section" open>
+      <summary><span class="summary-title">D04 项目团队</span><span class="summary-status"><span class="tag">{{本组状态摘要}}</span></span></summary>
+      <div class="detail-body">
+        <table>
+          <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+          <tbody>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D04-01</td><td>项目负责人明确且满足要求</td><td>{{实际检查内容：核对姓名、岗位、资格、职责、经验证明。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D04-02</td><td>团队角色完整</td><td>{{实际检查内容：核对项目管理、技术、实施、售后、培训、文档、安全、质量等角色。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D04-03</td><td>人员名单和姓名一致</td><td>{{实际检查内容：核对人员表、组织架构、方案、附件证书、社保/个税。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D04-04</td><td>人员证明材料齐全</td><td>{{实际检查内容：核对证书、职称、社保、个税、劳动关系、履历或经验材料。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D04-05</td><td>证书有效期和适用范围满足要求</td><td>{{实际检查内容：核对专业方向、等级、发证机构、有效期。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D04-06</td><td>评分项与人员证据对应</td><td>{{实际检查内容：建立“评分项-人员-证书-附件页码”关系。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details id="d05-section" open>
+      <summary><span class="summary-title">D05 业绩</span><span class="summary-status"><span class="tag">{{本组状态摘要}}</span></span></summary>
+      <div class="detail-body">
+        <table>
+          <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+          <tbody>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D05-01</td><td>同类业绩定义匹配</td><td>{{实际检查内容：核对行业、产品、服务、项目类型、采购内容。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D05-02</td><td>数量满足要求</td><td>{{实际检查内容：核对业绩清单数量和有效证明数量。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D05-03</td><td>时间范围满足要求</td><td>{{实际检查内容：按招标指定口径核对合同签订日、验收日、中标日等。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D05-04</td><td>金额满足要求</td><td>{{实际检查内容：核对合同金额、发票金额、单项金额或累计金额。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D05-05</td><td>主体匹配</td><td>{{实际检查内容：投标人、分公司、母子公司、联合体主体不得混用。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D05-06</td><td>合同关键页完整</td><td>{{实际检查内容：至少核对首页、金额页、范围/清单页、签章页；招标另有要求从招标。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D05-07</td><td>验收/发票/付款证明满足要求</td><td>{{实际检查内容：招标要求时逐份核对。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D05-08</td><td>业绩表与附件一致</td><td>{{实际检查内容：项目名称、客户、金额、时间、内容、页码一致。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details id="d06-section" open>
+      <summary><span class="summary-title">D06 资格性审查</span><span class="summary-status"><span class="tag">{{本组状态摘要}}</span></span></summary>
+      <div class="detail-body">
+        <table>
+          <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+          <tbody>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D06-01</td><td>投标主体资格满足要求</td><td>{{实际检查内容：核对营业执照、法人资格、分支机构限制、联合体要求。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D06-02</td><td>营业执照有效</td><td>{{实际检查内容：核对统一社会信用代码、经营状态、经营范围、扫描清晰度。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D06-03</td><td>信用查询满足要求</td><td>{{实际检查内容：核对查询主体、网站、日期、截图、信用记录。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D06-04</td><td>承诺覆盖资格要求</td><td>{{实际检查内容：核对无违法、无行贿、无处罚、真实性等承诺范围。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D06-05</td><td>税收、社保、财务证明满足要求</td><td>{{实际检查内容：核对期间、主体、证明类型、盖章或系统截图。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D06-06</td><td>资质证书和认证满足要求</td><td>{{实际检查内容：核对主体、范围、等级、有效期、认证覆盖。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D06-07</td><td>资格硬性条款无负偏离</td><td>{{实际检查内容：对照废标项、资格门槛逐项核对。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details id="d07-section" open>
+      <summary><span class="summary-title">D07 授权书和售后承诺函</span><span class="summary-status"><span class="tag">{{本组状态摘要}}</span></span></summary>
+      <div class="detail-body">
+        <table>
+          <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+          <tbody>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D07-01</td><td>原厂授权/售后要求已识别</td><td>{{实际检查内容：对照招标条款、证明材料清单、技术/商务要求。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D07-02</td><td>出具主体符合要求</td><td>{{实际检查内容：核对原厂、制造商、总代理、授权链和盖章主体。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D07-03</td><td>被授权主体与投标人一致</td><td>{{实际检查内容：核对营业执照、投标函、报价表、盖章主体。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D07-04</td><td>项目名称、采购人、招标编号准确</td><td>{{实际检查内容：与招标文件和投标文件封面交叉核对。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D07-05</td><td>产品品牌、型号、软件名称、授权范围覆盖投标内容</td><td>{{实际检查内容：核对报价、BOM、技术响应、证明材料。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D07-06</td><td>授权有效期覆盖要求</td><td>{{实际检查内容：核对授权期限、投标截止日、项目周期。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D07-07</td><td>售后承诺覆盖服务要求</td><td>{{实际检查内容：核对质保、响应、到场、修复、服务范围、备件。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D07-08</td><td>质保期限和起算点一致</td><td>{{实际检查内容：与招标、商务偏离表、技术偏离表、合同响应一致。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D07-09</td><td>无超范围或冲突承诺</td><td>{{实际检查内容：排查终身免费、无条件更换、无限赔偿等未确认强承诺。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details id="d08-section" open>
+      <summary><span class="summary-title">D08 技术参数与证明材料</span><span class="summary-status"><span class="tag">{{本组状态摘要}}</span></span></summary>
+      <div class="detail-body">
+        <table>
+          <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+          <tbody>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D08-01</td><td>技术参数满足最低要求</td><td>{{实际检查内容：核对不少于、不低于、支持、兼容、提供证明等限制词。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D08-02</td><td>关键参数有具体响应值</td><td>{{实际检查内容：不只写“满足”，应有型号、数量、规格或功能说明。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D08-03</td><td>关键技术项有证据</td><td>{{实际检查内容：★、▲、评分/废标技术项对应证书、截图、彩页、检测报告、官网页面。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D08-04</td><td>证明材料覆盖对应型号或版本</td><td>{{实际检查内容：防止证书/截图是其他型号或旧版本。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D08-05</td><td>证书主体、有效期、适用范围正确</td><td>{{实际检查内容：核对证书名称、主体、有效期、认证范围。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D08-06</td><td>官网截图、功能截图、彩页可支撑响应</td><td>{{实际检查内容：核对网址、页面标题、功能描述、关键字段清晰度。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D08-07</td><td>技术响应、偏离表、BOM、报价一致</td><td>{{实际检查内容：核对型号、数量、硬盘、CPU、GPU、内存、授权、服务期限。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details id="d09-section" open>
+      <summary><span class="summary-title">D09 投标方案</span><span class="summary-status"><span class="tag">{{本组状态摘要}}</span></span></summary>
+      <div class="detail-body">
+        <table>
+          <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+          <tbody>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D09-01</td><td>写作前置门禁完成</td><td>{{实际检查内容：检查准备清单/方案设计卡：招标要求、评分点、资料、缺口、策略、图表、确认问题。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D09-02</td><td>方案覆盖评分项</td><td>{{实际检查内容：技术、实施、服务、培训、文档、风险、验收、售后等覆盖招标/评分要求。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D09-03</td><td>方案主线与项目相关</td><td>{{实际检查内容：排查通用套话、无项目背景、无实施动作。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D09-04</td><td>方案可执行</td><td>{{实际检查内容：检查 WBS、职责、时间节点、交付物、台账、验收机制。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D09-05</td><td>图表和正文对应</td><td>{{实际检查内容：核对图号、图名、图注、正文引用、图片路径。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D09-06</td><td>无未确认高风险承诺</td><td>{{实际检查内容：检索报价、税率、BOM、维护费、付款、质保、免费、确保、额外提供等。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details id="d10-section" open>
+      <summary><span class="summary-title">D10 投标承诺函</span><span class="summary-status"><span class="tag">{{本组状态摘要}}</span></span></summary>
+      <div class="detail-body">
+        <table>
+          <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+          <tbody>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D10-01</td><td>固定格式优先</td><td>{{实际检查内容：招标有固定格式时按模板复刻；无固定格式才自拟。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D10-02</td><td>承诺事项覆盖招标要求</td><td>{{实际检查内容：覆盖资格、诚信、无违法、交付、服务、质保、保密、售后、真实性等。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D10-03</td><td>主体、项目、编号、日期准确</td><td>{{实际检查内容：与招标文件和投标文件封面核对。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D10-04</td><td>承诺内容与其他章节一致</td><td>{{实际检查内容：与投标函、偏离表、报价表、方案、合同响应横向核对。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D10-05</td><td>不主动新增超范围责任</td><td>{{实际检查内容：排查终身免费、无条件更换、无限赔偿、废标后果等招标未要求内容。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D10-06</td><td>不使用弱化措辞</td><td>{{实际检查内容：排查“尽量”“原则上”“视情况”“基本”等不稳措辞。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details id="d11-section" open>
+      <summary><span class="summary-title">D11 付款、交付、验收、质保</span><span class="summary-status"><span class="tag">{{本组状态摘要}}</span></span></summary>
+      <div class="detail-body">
+        <table>
+          <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+          <tbody>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D11-01</td><td>周期关键词成组检索</td><td>{{实际检查内容：必查：服务期、建设周期、计划建设周期、项目周期、项目实施计划、交货期、交付、稳定试运行。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D11-02</td><td>周期口径拆清</td><td>{{实际检查内容：拆清建设周期、交货/安装调试、稳定试运行、终验、付款节点，不把交货期误判为总工期。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D11-03</td><td>付款条件一致</td><td>{{实际检查内容：核对合同响应、商务偏离表、报价说明、承诺函。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D11-04</td><td>交付地点、内容、安装调试范围一致</td><td>{{实际检查内容：与报价范围和实施方案一致。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D11-05</td><td>验收依据、测试内容、验收资料可执行</td><td>{{实际检查内容：不只写“通过用户验收”。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D11-06</td><td>初验、终验、稳定试运行、复验机制一致</td><td>{{实际检查内容：核对方案、合同响应、商务偏离表。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D11-07</td><td>质保期限和起算点一致</td><td>{{实际检查内容：与招标、售后承诺函、合同响应一致。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>D11-08</td><td>维护费和免费范围边界清楚</td><td>{{实际检查内容：与报价、质保期后服务、商务条款一致。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details id="pre-section">
+      <summary><span class="summary-title">PRE 前置检查</span><span class="summary-status"><span class="tag">{{本组状态摘要}}</span></span></summary>
+      <div class="detail-body">
+        <table>
+          <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+          <tbody>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>PRE-01</td><td>检查阶段已确认</td><td>{{实际检查内容：记录章节版本、初稿版本、定稿版本或盖章版本；无法判断时先问用户。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>PRE-02</td><td>检查轮次已确认</td><td>{{实际检查内容：记录 first_check、recheck、spot_check 或 final_gate；复查需读取上一轮问题。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>PRE-03</td><td>检查对象和版本已确认</td><td>{{实际检查内容：记录文件名、路径、页数、hash 或版本号；避免把旧版/过程稿当当前对象。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>PRE-04</td><td>招标解析质量门已读取</td><td>{{实际检查内容：核对 parse_manifest、source hash、quality_gate、manual_review_queue。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>PRE-05</td><td>上游成果已读取</td><td>{{实际检查内容：有项目控制台时核对响应矩阵、资料清单、整改闭环；ad_hoc_mode 核对招标解析产物。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>PRE-06</td><td>验收卡来源已确认</td><td>{{实际检查内容：写明本技能验收卡读取情况。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>PRE-07</td><td>视觉核验方式和边界已确认</td><td>{{实际检查内容：记录 model_vision、recognizer_tool、hybrid 或 text_only_limited；CA/电子签章有效性、证书/信用截图外部真伪、递交平台/上传/加密状态属于边界外。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>PRE-08</td><td>报告信息已准备</td><td>{{实际检查内容：报告首页必须包含项目、招标人、投标人、招标文件、检查对象、页数、时间、阶段和结论。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+<tr><td><span class="table-status note" aria-label="待填写"></span></td><td>PRE-09</td><td>最小返工口径已确认</td><td>{{实际检查内容：本轮报告的问题整改建议按源头分流，不默认全流程重跑；无法判断源头时标为需主控判定。；填写本轮实际核验情况}}</td><td>{{结论（位置/结果/风险/问题/建议）：通过项写“通过”；问题项写“证据位置；P1-01：问题简述；建议：整改建议”}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+  </main>
+
+  <script>
+    const jumpButtons = document.querySelectorAll(".jump");
+
+    function getStatusType(source) {
+      const marker = source.querySelector ? source.querySelector(".table-status, .tag") : null;
+      const target = marker || source;
+      const text = ((target.getAttribute && (target.getAttribute("aria-label") || target.dataset.status)) || target.textContent || "").trim();
+      if ((target.classList && (target.classList.contains("red") || target.classList.contains("p0"))) || /^P0/.test(text)) return "p0";
+      if ((target.classList && (target.classList.contains("orange") || target.classList.contains("p1"))) || /^P1/.test(text) || /P1|需整改|有条件|风险|不通过/.test(text)) return "p1";
+      if ((target.classList && (target.classList.contains("yellow") || target.classList.contains("p2"))) || /^P2/.test(text) || /P2|优化/.test(text)) return "p2";
+      if ((target.classList && (target.classList.contains("green") || target.classList.contains("pass"))) || /^通过$|通过|已执行|已覆盖|已完成|是/.test(text)) return "pass";
+      return "note";
+    }
+
+    function escapeAttr(value) {
+      return String(value || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function statusMarkup(type, label) {
+      return `<span class="table-status ${type}" aria-label="${escapeAttr(label || type)}"></span>`;
+    }
+
+    function isStatusHeader(cell) {
+      return cell && (cell.textContent.trim() === "状态" || cell.getAttribute("aria-label") === "状态" || cell.classList.contains("status-head"));
+    }
+    function enhanceStatusTables() {
+      document.querySelectorAll("table").forEach((table) => {
+        const bodyRows = Array.from(table.querySelectorAll("tbody tr"));
+        const headerRow = table.querySelector("thead tr");
+        if (!headerRow) return;
+        const headers = Array.from(headerRow.children).map((cell) => cell.textContent.trim());
+        const firstHeader = headerRow.children[0];
+        const hasStatusColumn = isStatusHeader(firstHeader);
+        const hasOldResultColumn = headers.includes("结果");
+        const hasStatusMarker = bodyRows.some((row) => row.querySelector("td .tag, td .table-status"));
+        if (!hasStatusColumn && !hasOldResultColumn && !hasStatusMarker) return;
+        if (table.classList.contains("status-table")) return;
+        table.classList.add("status-table");
+
+        table.querySelectorAll("thead tr").forEach((row) => {
+          const cells = Array.from(row.children);
+          const statusIndex = cells.findIndex(isStatusHeader);
+          const resultIndex = cells.findIndex((cell) => cell.textContent.trim() === "结果");
+          const issueIndex = cells.findIndex((cell) => cell.textContent.trim() === "问题编号");
+          const adviceIndex = cells.findIndex((cell) => cell.textContent.trim() === "整改建议");
+
+          if (statusIndex === 0) {
+            cells[0].textContent = "";
+            cells[0].setAttribute("aria-label", "状态");
+            cells[0].classList.add("status-head");
+          } else if (statusIndex < 0) {
+            const th = document.createElement("th");
+            th.className = "status-head";
+            th.setAttribute("aria-label", "状态");
+            row.insertBefore(th, row.firstElementChild);
+          }
+
+          const shifted = Array.from(row.children);
+          if (issueIndex >= 0 && adviceIndex >= 0 && resultIndex >= 0) {
+            shifted[issueIndex + 1].textContent = "问题编号与整改";
+            shifted[adviceIndex + 1].remove();
+          }
+          if (resultIndex >= 0) shifted[resultIndex + 1].remove();
+        });
+
+        bodyRows.forEach((row) => {
+          const cells = Array.from(row.children);
+          const headerCells = Array.from(table.querySelectorAll("thead th"));
+          const firstHeaderIsStatus = headerCells[0] && isStatusHeader(headerCells[0]) && cells.length === headerCells.length;
+          const resultIndex = cells.findIndex((cell) => cell.querySelector(".tag"));
+          const issueIndex = !firstHeaderIsStatus && resultIndex >= 0 ? resultIndex + 1 : -1;
+          const adviceIndex = !firstHeaderIsStatus && resultIndex >= 0 ? resultIndex + 2 : -1;
+          const statusCell = firstHeaderIsStatus ? cells[0] : null;
+          const resultCell = statusCell || (resultIndex >= 0 ? cells[resultIndex] : null);
+          const issueCell = issueIndex >= 0 ? cells[issueIndex] : null;
+          const adviceCell = adviceIndex >= 0 ? cells[adviceIndex] : null;
+
+          if (!resultCell) {
+            const cell = document.createElement("td");
+            cell.innerHTML = statusMarkup("note", "说明");
+            row.insertBefore(cell, row.firstElementChild);
+            return;
+          }
+
+          const type = getStatusType(resultCell);
+          const label = (resultCell.querySelector(".table-status, .tag")?.getAttribute("aria-label") || resultCell.textContent || type).trim();
+          if (statusCell) {
+            statusCell.innerHTML = statusMarkup(type, label);
+          } else {
+            const cell = document.createElement("td");
+            cell.innerHTML = statusMarkup(type, label);
+            row.insertBefore(cell, row.firstElementChild);
+          }
+
+          if (issueCell && adviceCell) {
+            const issueText = issueCell.textContent.trim();
+            const adviceText = adviceCell.textContent.trim();
+            if (issueText === "-" && adviceText === "-") {
+              issueCell.textContent = "-";
+            } else {
+              const issueHtml = issueText === "-" ? "" : `<span class="issue-ref">${issueText}</span>`;
+              const adviceHtml = adviceText === "-" ? "" : `<span class="advice-text">${adviceText}</span>`;
+              issueCell.innerHTML = `<span class="merged-action">${issueHtml}${adviceHtml}</span>`;
+            }
+            adviceCell.remove();
+          }
+
+          if (resultCell && !statusCell) resultCell.remove();
+          const conclusionCell = row.lastElementChild;
+          if (conclusionCell && conclusionCell !== row.firstElementChild) {
+            conclusionCell.classList.remove("conclusion-pass", "conclusion-p0", "conclusion-p1", "conclusion-p2", "conclusion-note");
+            conclusionCell.classList.add(`conclusion-${type}`);
+          }
+          if (type === "p0" || type === "p1" || type === "p2") {
+            row.classList.add(`risk-row-${type}`);
+          }
+        });
+      });
+    }
+
+    enhanceStatusTables();
+
+    function addMobileTableLabels() {
+      document.querySelectorAll("table").forEach((table) => {
+        const headers = Array.from(table.querySelectorAll("thead th")).map((cell) => cell.textContent.trim());
+        table.querySelectorAll("tbody tr").forEach((row) => {
+          Array.from(row.children).forEach((cell, index) => {
+            cell.dataset.label = headers[index] || "";
+          });
+        });
+      });
+    }
+
+    addMobileTableLabels();
+
+    jumpButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const target = document.getElementById(button.dataset.target);
+        if (!target) return;
+        jumpButtons.forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        if (target.tagName.toLowerCase() === "details") target.open = true;
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+  </script>
+</body>
+</html>
