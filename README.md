@@ -17,15 +17,45 @@ skills/
 
 ## Install
 
-Copy the two skill directories into your Codex skills directory:
+List the available skills:
+
+```bash
+npx skills add https://github.com/cruz-huang/skills --list
+```
+
+Install the tender parser:
+
+```bash
+npx skills add https://github.com/cruz-huang/skills --skill tender-document-parser
+```
+
+Install the bid document checker:
+
+```bash
+npx skills add https://github.com/cruz-huang/skills --skill bid-document-checker
+```
+
+Install both skills:
+
+```bash
+npx skills add https://github.com/cruz-huang/skills --skill tender-document-parser bid-document-checker
+```
+
+Or choose interactively:
+
+```bash
+npx skills add https://github.com/cruz-huang/skills
+```
+
+Restart Codex after installation so it can discover the new skills.
+
+Manual fallback:
 
 ```bash
 mkdir -p ~/.codex/skills
 cp -R skills/tender-document-parser ~/.codex/skills/
 cp -R skills/bid-document-checker ~/.codex/skills/
 ```
-
-Then restart Codex so it can discover the new skills.
 
 ## Skill: tender-document-parser
 
