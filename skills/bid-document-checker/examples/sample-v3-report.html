@@ -738,6 +738,16 @@
       font-weight: 650;
     }
 
+    .pass-row td:not(:first-child) {
+      color: var(--green-status);
+      font-weight: 650;
+    }
+
+    tbody tr:has(.table-status.pass) td:not(:first-child) {
+      color: var(--green-status);
+      font-weight: 650;
+    }
+
     .merged-action {
       display: grid;
       gap: 3px;
@@ -1050,14 +1060,15 @@
           <div><strong>检查对象</strong><span>示例投标文件.pdf</span></div>
           <div><strong>PDF页数</strong><span>100 页</span></div>
           <div><strong>核验方式</strong><span>recognizer_tool</span></div>
-          <div><strong>验收卡覆盖率摘要</strong><span>112/112 项已完成，0 项受限未执行，0 项未回填；本轮检查过程已闭环</span></div>
+          <div><strong>本轮验收卡</strong><span>投标文件检查验收卡-盖章版本-示例.md</span></div>
+          <div><strong>验收卡覆盖率摘要</strong><span>122/122 项已完成；项目增量项 0，TENDER项 0，未映射要求 0；0 项受限未执行，0 项未回填；本轮检查过程已闭环</span></div>
         </aside>
       </div>
       <div class="scorebar">
         <div class="metric p0"><b>0</b><span>P0 废标/阻断</span></div>
         <div class="metric p1"><b>1</b><span>P1 重大风险</span></div>
         <div class="metric p2"><b>1</b><span>P2 一般优化</span></div>
-        <div class="metric ok"><b>112</b><span>已完成检查项</span></div>
+        <div class="metric ok"><b>122</b><span>已完成检查项</span></div>
         <div class="metric note"><b>0</b><span>受限未执行</span></div>
       </div>
     </header>
@@ -1095,7 +1106,7 @@
         <div class="fix-list">
           <article class="fix-card">
             <h3>P1-01 质保起算点不一致</h3>
-            <p><span class="field-label loc">位置</span>物理页 20，售后服务章节；对应检查 ID：<code>D11-07</code>、<code>G01-03</code></p>
+            <p><span class="field-label loc">位置</span>物理页 20、80，商务偏离表、售后服务章节和售后承诺函；对应检查 ID：<code>G01-03</code>、<code>G01-04</code>、<code>D02-06</code>、<code>D07-08</code>、<code>D11-07</code></p>
             <p><span class="field-label problem">问题</span>质保起算点与售后服务承诺函不一致，属于核心口径冲突。</p>
             <p class="copy-text"><span class="field-label suggest">建议</span>统一为招标和承诺函一致的起算口径。</p>
           </article>
@@ -1129,22 +1140,22 @@
 
 
     <details id="g01-section" open>
-      <summary><span class="summary-title">G01 核心信息一致性</span><span class="summary-status"><span class="tag orange">2 项 P1</span><span class="tag green">2 项通过</span></span></summary>
+      <summary><span class="summary-title">G01 核心信息一致性</span><span class="summary-status"><span class="tag orange">关联 P1-01</span><span class="tag green">2 项通过</span></span></summary>
       <div class="detail-body">
         <table>
           <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
           <tbody>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>G01-01</td><td>投标主体一致</td><td>核对封面、投标函、报价表、偏离表、营业执照、授权书和盖章主体，未发现主体混用。</td><td>通过</td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>G01-02</td><td>项目名称、招标编号、招标人一致</td><td>核对封面、投标函、授权售后材料、承诺函、报价表和证明材料，项目名称和招标编号一致。</td><td>通过</td></tr>
-<tr><td><span class="table-status p1" aria-label="P1"></span></td><td>G01-03</td><td>高风险字段全篇一致</td><td>核对报价、税率、数量、型号、BOM、交付期、质保期、付款和验收，发现质保起算点存在冲突。</td><td><span class="muted">物理页 20、80</span><br><span class="merged-action"><span class="issue-ref">P1-01</span><span class="advice-text">建议：统一质保起算口径</span></span></td></tr>
-<tr><td><span class="table-status p1" aria-label="P1"></span></td><td>G01-04</td><td>已提供材料不自相矛盾</td><td>核对附件材料与正文、偏离表、证明材料索引，发现售后承诺函与正文质保起算表述不一致。</td><td><span class="muted">售后承诺函、售后服务章节</span><br><span class="merged-action"><span class="issue-ref">P1-01</span><span class="advice-text">建议：同步修正文档和附件口径</span></span></td></tr>
+<tr><td><span class="table-status p1" aria-label="P1"></span></td><td>G01-03</td><td>高风险字段全篇一致</td><td>核对报价、税率、数量、型号、BOM、交付期、质保期、付款和验收，发现质保起算点存在冲突。</td><td><span class="muted">物理页 20、80</span><br><span class="merged-action"><span class="issue-ref">关联 P1-01</span><span class="advice-text">详见当前问题清单</span></span></td></tr>
+<tr><td><span class="table-status p1" aria-label="P1"></span></td><td>G01-04</td><td>已提供材料不自相矛盾</td><td>核对附件材料与正文、偏离表、证明材料索引，发现售后承诺函与正文质保起算表述不一致。</td><td><span class="muted">售后承诺函、售后服务章节</span><br><span class="merged-action"><span class="issue-ref">关联 P1-01</span><span class="advice-text">详见当前问题清单</span></span></td></tr>
           </tbody>
         </table>
       </div>
     </details>
 
     <details id="g02-section" open>
-      <summary><span class="summary-title">G02 证据可追溯性</span><span class="summary-status"><span class="tag green">4 项通过</span></span></summary>
+      <summary><span class="summary-title">G02 证据可追溯性</span><span class="summary-status"><span class="tag green">5 项通过</span></span></summary>
       <div class="detail-body">
         <table>
           <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
@@ -1152,7 +1163,7 @@
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>G02-01</td><td>响应和证明有最小定位</td><td>抽查响应项、问题项和证明项是否能定位到章节、页码、图号或附件标题。</td><td>通过</td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>G02-02</td><td>不编造页码和证明编号</td><td>抽查页码、截图编号、证书编号和附件编号，未发现虚构编号。</td><td>通过</td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>G02-03</td><td>招标要求可映射到检查项</td><td>废标项、资格项、评分项、技术参数、商务条款和递交要求均已映射到本轮检查项。</td><td>通过</td></tr>
-<tr><td><span class="table-status pass" aria-label="通过"></span></td><td>G02-04</td><td>问题可反查验收卡</td><td>P1-01 和 P2-01 均绑定检查 ID、证据位置和整改建议。</td><td>通过</td></tr>
+<tr><td><span class="table-status pass" aria-label="通过"></span></td><td>G02-04</td><td>问题可反查验收卡</td><td>当前问题清单中的问题均绑定检查 ID、证据位置和整改建议；G/D/PRE 明细只引用问题编号。</td><td>通过</td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>G02-05</td><td>最小返工路径清楚</td><td>问题建议已指向资料、写作、DOCX 或主控确认，不默认全流程重跑。</td><td>通过</td></tr>
           </tbody>
         </table>
@@ -1168,7 +1179,7 @@
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>G03-01</td><td>图片类证明文件清晰可读</td><td>核验证书、合同、授权书、售后函、截图等关键字段可读。</td><td>通过</td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>G03-02</td><td>图片方向和裁切正常</td><td>核验图片横置、倒置、裁切、变形和缩放情况，未发现影响阅读的问题。</td><td>通过</td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>G03-03</td><td>签章、签名、日期可见事实已核验</td><td>识别 PDF 内可见签章、签名和日期；不判断 CA 有效性和外部真伪。</td><td>通过</td></tr>
-<tr><td><span class="table-status pass" aria-label="通过"></span></td><td>G03-04</td><td>图片证明与正文描述一致</td><td>核对证书等级、有效期、主体、型号、日期和项目名称与正文描述，未发现除 P1-01 外的冲突。</td><td>通过</td></tr>
+<tr><td><span class="table-status pass" aria-label="通过"></span></td><td>G03-04</td><td>图片证明与正文描述一致</td><td>核对证书等级、有效期、主体、型号、日期和项目名称与正文描述，未发现除当前问题清单已列问题外的新冲突。</td><td>通过</td></tr>
           </tbody>
         </table>
       </div>
@@ -1190,16 +1201,17 @@
     </details>
 
     <details id="g05-section" open>
-      <summary><span class="summary-title">G05 页码编号、文字质量、内部痕迹</span><span class="summary-status"><span class="tag yellow">1 项 P2</span><span class="tag green">4 项通过</span></span></summary>
+      <summary><span class="summary-title">G05 页码编号、文字质量、内部痕迹</span><span class="summary-status"><span class="tag yellow">关联 P2-01</span><span class="tag green">5 项通过</span></span></summary>
       <div class="detail-body">
         <table>
           <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
           <tbody>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>G05-01</td><td>页码和目录连续一致</td><td>核对 PDF 物理页、页脚页码、目录页码和附件引用页码，未发现断页、跳页或重号。</td><td>通过</td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>G05-02</td><td>编号连续</td><td>检查大纲标题、方案分项、表格行号、参数序号、图号、表号和附件编号，未发现明显跳号。</td><td>通过</td></tr>
-<tr><td><span class="table-status p2" aria-label="P2"></span></td><td>G05-03</td><td>中文文本和标点质量</td><td>抽查中文正文标点，发现少量英文标点混入；型号、网址、邮箱和证书原文未纳入修改范围。</td><td><span class="muted">正文抽检</span><br><span class="merged-action"><span class="issue-ref">P2-01</span><span class="advice-text">建议：正文统一中文标点</span></span></td></tr>
+<tr><td><span class="table-status p2" aria-label="P2"></span></td><td>G05-03</td><td>中文文本和标点质量</td><td>抽查中文正文标点，发现少量英文标点混入；型号、网址、邮箱和证书原文未纳入修改范围。</td><td><span class="muted">正文抽检</span><br><span class="merged-action"><span class="issue-ref">关联 P2-01</span><span class="advice-text">详见当前问题清单</span></span></td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>G05-04</td><td>内部痕迹清除</td><td>检索 BID_META、DOCX_FORMAT、TODO、待补、资料路径和内部说明，未发现进入正文展示区域。</td><td>通过</td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>G05-05</td><td>表格和分页可读</td><td>检查跨页表头、版心、边框、文字挤压、标题孤行、附件标题与图片对应，未发现阻断问题。</td><td>通过</td></tr>
+<tr><td><span class="table-status pass" aria-label="通过"></span></td><td>G05-06</td><td>结构化生成痕迹清除</td><td>检查结构化占位符、BID_META、DOCX_FORMAT、DOCX_HANDOFF 和字段 JSON 内容，未发现残留到最终 PDF。</td><td>通过</td></tr>
           </tbody>
         </table>
       </div>
@@ -1261,7 +1273,7 @@
     </details>
 
     <details id="d02-section" open>
-      <summary><span class="summary-title">D02 商务偏离表</span><span class="summary-status"><span class="tag orange">1 项 P1</span><span class="tag green">5 项通过</span></span></summary>
+      <summary><span class="summary-title">D02 商务偏离表</span><span class="summary-status"><span class="tag orange">关联 P1-01</span><span class="tag green">5 项通过</span></span></summary>
       <div class="detail-body">
         <table>
           <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
@@ -1271,7 +1283,7 @@
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>D02-03</td><td>响应栏先写明确结论</td><td>核对商务偏离表响应栏，响应结论明确。</td><td>通过</td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>D02-04</td><td>无实质性负偏离</td><td>对照实质性商务条款和不得偏离条款，未发现负偏离。</td><td>通过</td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>D02-05</td><td>证明位置可追溯</td><td>商务响应证明位置指向章节、附件标题或资料名，可追溯。</td><td>通过</td></tr>
-<tr><td><span class="table-status p1" aria-label="P1"></span></td><td>D02-06</td><td>高风险商务字段一致</td><td>核对报价、税率、维护费、付款比例、交付期和质保期，质保起算点问题见 P1-01。</td><td><span class="muted">商务偏离表、售后章节</span><br><span class="merged-action"><span class="issue-ref">P1-01</span><span class="advice-text">建议：同步质保起算点</span></span></td></tr>
+<tr><td><span class="table-status p1" aria-label="P1"></span></td><td>D02-06</td><td>高风险商务字段一致</td><td>核对报价、税率、维护费、付款比例、交付期和质保期，质保起算点问题见当前问题清单。</td><td><span class="muted">商务偏离表、售后章节</span><br><span class="merged-action"><span class="issue-ref">关联 P1-01</span><span class="advice-text">详见当前问题清单</span></span></td></tr>
           </tbody>
         </table>
       </div>
@@ -1349,7 +1361,7 @@
     </details>
 
     <details id="d07-section" open>
-      <summary><span class="summary-title">D07 授权书和售后承诺函</span><span class="summary-status"><span class="tag orange">1 项 P1</span><span class="tag green">8 项通过</span></span></summary>
+      <summary><span class="summary-title">D07 授权书和售后承诺函</span><span class="summary-status"><span class="tag orange">关联 P1-01</span><span class="tag green">8 项通过</span></span></summary>
       <div class="detail-body">
         <table>
           <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
@@ -1361,7 +1373,7 @@
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>D07-05</td><td>产品品牌、型号、软件名称、授权范围覆盖投标内容</td><td>核对报价、BOM、技术响应和证明材料，授权范围覆盖投标内容。</td><td>通过</td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>D07-06</td><td>授权有效期覆盖要求</td><td>核对授权期限、投标截止日和项目周期，有效期覆盖要求。</td><td>通过</td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>D07-07</td><td>售后承诺覆盖服务要求</td><td>核对质保、响应、到场、修复、服务范围和备件，售后服务范围覆盖。</td><td>通过</td></tr>
-<tr><td><span class="table-status p1" aria-label="P1"></span></td><td>D07-08</td><td>质保期限和起算点一致</td><td>核对售后承诺函、商务偏离表、技术偏离表和合同响应，发现质保起算点不一致。</td><td><span class="muted">物理页 20、80</span><br><span class="merged-action"><span class="issue-ref">P1-01</span><span class="advice-text">建议：统一质保起算点</span></span></td></tr>
+<tr><td><span class="table-status p1" aria-label="P1"></span></td><td>D07-08</td><td>质保期限和起算点一致</td><td>核对售后承诺函、商务偏离表、技术偏离表和合同响应，发现质保起算点不一致。</td><td><span class="muted">物理页 20、80</span><br><span class="merged-action"><span class="issue-ref">关联 P1-01</span><span class="advice-text">详见当前问题清单</span></span></td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>D07-09</td><td>无超范围或冲突承诺</td><td>排查终身免费、无条件更换、无限赔偿等未确认强承诺，未发现新增超范围承诺。</td><td>通过</td></tr>
           </tbody>
         </table>
@@ -1412,7 +1424,7 @@
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>D10-01</td><td>固定格式优先</td><td>核对投标承诺函是否使用招标固定格式；无固定格式处才自拟。</td><td>通过</td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>D10-02</td><td>承诺事项覆盖招标要求</td><td>核对资格、诚信、无违法、交付、服务、质保、保密、售后和真实性承诺，覆盖要求。</td><td>通过</td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>D10-03</td><td>主体、项目、编号、日期准确</td><td>核对承诺函主体、项目名称、编号和日期，与招标文件和投标封面一致。</td><td>通过</td></tr>
-<tr><td><span class="table-status pass" aria-label="通过"></span></td><td>D10-04</td><td>承诺内容与其他章节一致</td><td>核对投标函、偏离表、报价表、方案和合同响应，除 P1-01 外未发现新冲突。</td><td>通过</td></tr>
+<tr><td><span class="table-status pass" aria-label="通过"></span></td><td>D10-04</td><td>承诺内容与其他章节一致</td><td>核对投标函、偏离表、报价表、方案和合同响应，未发现除当前问题清单已列问题外的新冲突。</td><td>通过</td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>D10-05</td><td>不主动新增超范围责任</td><td>排查终身免费、无条件更换、无限赔偿、废标后果等招标未要求内容，未发现超范围承诺。</td><td>通过</td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>D10-06</td><td>不使用弱化措辞</td><td>排查“尽量”“原则上”“视情况”“基本”等不稳措辞，未发现实质性弱化。</td><td>通过</td></tr>
           </tbody>
@@ -1421,7 +1433,7 @@
     </details>
 
     <details id="d11-section" open>
-      <summary><span class="summary-title">D11 付款、交付、验收、质保</span><span class="summary-status"><span class="tag orange">1 项 P1</span><span class="tag green">7 项通过</span></span></summary>
+      <summary><span class="summary-title">D11 付款、交付、验收、质保</span><span class="summary-status"><span class="tag orange">关联 P1-01</span><span class="tag green">7 项通过</span></span></summary>
       <div class="detail-body">
         <table>
           <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
@@ -1432,14 +1444,14 @@
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>D11-04</td><td>交付地点、内容、安装调试范围一致</td><td>核对报价范围、服务清单和实施方案，交付地点、内容和安装调试范围一致。</td><td>通过</td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>D11-05</td><td>验收依据、测试内容、验收资料可执行</td><td>核对验收依据、测试内容、验收资料和双方确认机制，不只写“通过用户验收”。</td><td>通过</td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>D11-06</td><td>初验、终验、稳定试运行、复验机制一致</td><td>核对方案、合同响应和商务偏离表，验收节点和稳定试运行逻辑一致。</td><td>通过</td></tr>
-<tr><td><span class="table-status p1" aria-label="P1"></span></td><td>D11-07</td><td>质保期限和起算点一致</td><td>核对招标、售后承诺函和合同响应，发现质保起算点不一致。</td><td><span class="muted">物理页 20、80</span><br><span class="merged-action"><span class="issue-ref">P1-01</span><span class="advice-text">建议：统一质保起算口径</span></span></td></tr>
+<tr><td><span class="table-status p1" aria-label="P1"></span></td><td>D11-07</td><td>质保期限和起算点一致</td><td>核对招标、售后承诺函和合同响应，发现质保起算点不一致。</td><td><span class="muted">物理页 20、80</span><br><span class="merged-action"><span class="issue-ref">关联 P1-01</span><span class="advice-text">详见当前问题清单</span></span></td></tr>
 <tr><td><span class="table-status pass" aria-label="通过"></span></td><td>D11-08</td><td>维护费和免费范围边界清楚</td><td>核对报价、质保期后服务和商务条款，维护费和免费范围边界清楚。</td><td>通过</td></tr>
           </tbody>
         </table>
       </div>
     </details>
     <details id="pre-section">
-      <summary><span class="summary-title">PRE 前置检查</span><span class="summary-status"><span class="tag green">8 项通过</span></span></summary>
+      <summary><span class="summary-title">PRE 前置检查</span><span class="summary-status"><span class="tag green">9 项通过</span></span></summary>
       <div class="detail-body">
         <table>
           <thead><tr><th class="status-head" aria-label="状态"></th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
@@ -1574,6 +1586,8 @@
           }
           if (type === "p0" || type === "p1" || type === "p2") {
             row.classList.add(`risk-row-${type}`);
+          } else if (type === "pass") {
+            row.classList.add("pass-row");
           }
         });
       });

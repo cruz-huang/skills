@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>最小重复问题校验样例</title>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>投标文件检查报告</h1>
+      <h2>报告信息</h2>
+      <p>总论：需处理 1 项 P1 后复查。</p>
+      <p>本轮验收卡：.bid-checker/投标文件检查验收卡-最小示例.md</p>
+      <p>验收卡覆盖率摘要：5/5 项已完成；项目增量项 0，TENDER项 0，未映射要求 0；0 项受限未执行，0 项未回填。</p>
+      <div class="metric p1"><b>1</b><span>P1 重大风险</span></div>
+    </section>
+
+    <section id="issues">
+      <h2>当前问题</h2>
+      <h3>P1 重大风险</h3>
+      <article>
+        <h4>P1-01 质保起算点存在冲突</h4>
+        <p>检查ID：G01-03、G01-04、D02-06、D07-08、D11-07</p>
+        <p>建议：统一质保起算点并复查关联章节。</p>
+      </article>
+    </section>
+
+    <section id="next-section">
+      <h2>下一步建议</h2>
+      <ol>
+        <li>处理 P1-01：统一质保起算点。</li>
+        <li>复查关联的 5 个检查项。</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>G01 核心信息一致性</h2>
+      <table>
+        <thead><tr><th>状态</th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+        <tbody>
+          <tr><td>P1</td><td>G01-03</td><td>高风险字段全篇一致</td><td>核对质保期和起算点，发现同一口径冲突。</td><td>商务响应、售后承诺函；关联 P1-01；详见当前问题清单。</td></tr>
+          <tr><td>P1</td><td>G01-04</td><td>已提供材料不自相矛盾</td><td>核对正文与附件材料，发现质保起算点不一致。</td><td>售后承诺函、合同响应；关联 P1-01；详见当前问题清单。</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>D02 商务偏离表</h2>
+      <table>
+        <thead><tr><th>状态</th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+        <tbody>
+          <tr><td>P1</td><td>D02-06</td><td>高风险商务字段一致</td><td>核对商务条款中的质保起算点。</td><td>商务偏离表；关联 P1-01；详见当前问题清单。</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>D07 授权书和售后承诺函</h2>
+      <table>
+        <thead><tr><th>状态</th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+        <tbody>
+          <tr><td>P1</td><td>D07-08</td><td>质保期限和起算点一致</td><td>核对售后承诺函中的质保起算点。</td><td>售后承诺函；关联 P1-01；详见当前问题清单。</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>D11 付款、交付、验收、质保</h2>
+      <table>
+        <thead><tr><th>状态</th><th>检查ID</th><th>检查项</th><th>实际检查内容</th><th>结论（位置/结果/风险/问题/建议）</th></tr></thead>
+        <tbody>
+          <tr><td>P1</td><td>D11-07</td><td>质保期限和起算点一致</td><td>核对合同响应中的质保起算点。</td><td>合同响应；关联 P1-01；详见当前问题清单。</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

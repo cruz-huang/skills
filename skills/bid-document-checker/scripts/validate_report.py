@@ -39,7 +39,6 @@ REQUIRED_GROUPS = [
 
 REQUIRED_SECTIONS = [
     "报告信息",
-    "本轮验收卡信息",
     "总论",
     "当前问题",
     "下一步",
@@ -68,6 +67,8 @@ FORBIDDEN_PATTERNS = [
 ]
 
 CHECK_ID_RE = re.compile(r"\b(?:PRE|G\d{2}|D\d{2}|TENDER|PX)-\d{2,4}\b")
+ISSUE_ID_RE = re.compile(r"\bP[012]-\d{2,4}\b")
+ISSUE_LEVELS = ("P0", "P1", "P2")
 
 
 def read_text(path: str | None) -> str:
@@ -85,11 +86,62 @@ def html_to_text(html: str) -> str:
 
 
 def issue_ids(text: str) -> set[str]:
-    return set(re.findall(r"\bP[012]-\d{2,4}\b", text))
+    return set(ISSUE_ID_RE.findall(text))
 
 
 def check_ids(text: str) -> set[str]:
     return set(CHECK_ID_RE.findall(text))
+
+
+def section_after_heading(text: str, heading: str) -> str:
+    match = re.search(rf"(?m)^##\s*{re.escape(heading)}\b.*$", text)
+    if not match:
+        return ""
+    next_heading = re.search(r"(?m)^##\s+", text[match.end() :])
+    end = match.end() + next_heading.start() if next_heading else len(text)
+    return text[match.start() : end]
+
+
+def current_issue_section(md: str) -> str:
+    return section_after_heading(md, "当前问题")
+
+
+def issue_ids_by_level(text: str) -> dict[str, set[str]]:
+    return {level: set(re.findall(rf"\b{level}-\d{{2,4}}\b", text)) for level in ISSUE_LEVELS}
+
+
+def mentioned_issue_counts(text: str) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for amount, level in re.findall(r"存在\s*(\d+)\s*项\s*(P[012])\b", text):
+        counts[level] = int(amount)
+    return counts
+
+
+def remove_current_issue_section(md: str) -> str:
+    section = current_issue_section(md)
+    return md.replace(section, "", 1) if section else md
+
+
+def markdown_detail_rows(md: str) -> list[str]:
+    without_issues = remove_current_issue_section(md)
+    return [
+        line.strip()
+        for line in without_issues.splitlines()
+        if line.lstrip().startswith("|") and CHECK_ID_RE.search(line)
+    ]
+
+
+def html_table_rows(html: str) -> list[str]:
+    return re.findall(r"(?is)<tr\b[^>]*>.*?</tr>", html)
+
+
+def html_metric_count(html: str, level: str) -> int | None:
+    css = level.lower()
+    match = re.search(
+        rf'(?is)<div\s+class="metric\s+{css}"[^>]*>\s*<b>\s*(\d+)\s*</b>',
+        html,
+    )
+    return int(match.group(1)) if match else None
 
 
 def has_issue_heading(text: str, level: str) -> bool:
@@ -127,10 +179,18 @@ def has_detail_rows(md: str) -> bool:
 def validate_markdown(md: str, stage: str) -> tuple[list[str], list[str]]:
     errors: list[str] = []
     warnings: list[str] = []
+    issue_section = current_issue_section(md)
+    ledger_ids = issue_ids(issue_section)
+    all_ids = issue_ids(md)
 
     for section in REQUIRED_SECTIONS:
         if section not in md:
             add_error(errors, f"Markdown 缺少必要章节或关键词：{section}")
+
+    if all_ids and not ledger_ids:
+        add_error(errors, "Markdown 存在 P0/P1/P2 编号，但当前问题区没有唯一问题台账")
+    for issue_id in sorted(all_ids - ledger_ids):
+        add_error(errors, f"Markdown 问题编号未进入当前问题清单：{issue_id}")
 
     if is_full_stage(stage):
         for group in REQUIRED_GROUPS:
@@ -152,9 +212,19 @@ def validate_markdown(md: str, stage: str) -> tuple[list[str], list[str]]:
         add_warn(warnings, "完整检查建议包含验收卡覆盖率摘要")
 
     if is_full_stage(stage):
-        for keyword in ["实例卡路径", "项目增量项数", "TENDER项数", "未映射要求数"]:
-            if keyword not in md:
-                add_error(errors, f"本轮验收卡信息缺少字段：{keyword}")
+        required_card_summary = [
+            ("本轮验收卡", r"本轮验收卡"),
+            ("验收卡覆盖率摘要", r"验收卡覆盖率摘要"),
+            ("项目增量项", r"项目增量项"),
+            ("TENDER项", r"TENDER\s*项"),
+            ("未映射要求", r"未映射要求"),
+        ]
+        for label, pattern in required_card_summary:
+            if not re.search(pattern, md):
+                add_error(errors, f"报告信息中的验收卡摘要缺少字段：{label}")
+
+    if re.search(r"(?m)^##\s*本轮验收卡信息\b", md):
+        add_error(errors, "不要输出独立的“本轮验收卡信息”章节；验收卡路径和覆盖率摘要应写入报告信息")
 
     for pattern, message in FORBIDDEN_PATTERNS:
         if pattern.search(md):
@@ -171,6 +241,21 @@ def validate_markdown(md: str, stage: str) -> tuple[list[str], list[str]]:
     if "首页摘要" in md and md.count("首页摘要") > 1:
         add_warn(warnings, "Markdown 出现多处“首页摘要”，可能有重复摘要")
 
+    ledger_by_level = issue_ids_by_level(issue_section)
+    for level, expected in mentioned_issue_counts(md).items():
+        actual = len(ledger_by_level[level])
+        if expected != actual:
+            add_error(errors, f"Markdown {level} 数量应按当前问题清单统计：摘要写 {expected}，清单为 {actual}")
+
+    for row in markdown_detail_rows(md):
+        row_issue_ids = issue_ids(row)
+        if not row_issue_ids:
+            continue
+        if "关联 P" not in row or "详见当前问题清单" not in row:
+            add_error(errors, "Markdown 明细行引用问题编号时必须写“关联 Pxx-xx；详见当前问题清单”： " + row[:120])
+        if "建议：" in row:
+            add_error(errors, "Markdown 明细行不得重复写整改建议，应只引用当前问题清单： " + row[:120])
+
     return errors, warnings
 
 
@@ -178,6 +263,9 @@ def validate_html(md: str, html: str) -> tuple[list[str], list[str]]:
     errors: list[str] = []
     warnings: list[str] = []
     html_text = html_to_text(html)
+    ledger_by_level = issue_ids_by_level(current_issue_section(md))
+    md_ids = issue_ids(md)
+    html_ids = issue_ids(html_text)
 
     for group in REQUIRED_GROUPS:
         if group in md and group not in html_text:
@@ -191,11 +279,17 @@ def validate_html(md: str, html: str) -> tuple[list[str], list[str]]:
         if section in md and section not in html_text:
             add_error(errors, f"HTML 缺少 Markdown 中的主要章节：{section}")
 
-    md_ids = issue_ids(md)
-    html_ids = issue_ids(html_text)
     missing = sorted(md_ids - html_ids)
     if missing:
         add_error(errors, "HTML 缺少问题编号：" + ", ".join(missing))
+    extra = sorted(html_ids - md_ids)
+    if extra:
+        add_error(errors, "HTML 出现 Markdown 没有的问题编号：" + ", ".join(extra))
+
+    for level in ISSUE_LEVELS:
+        metric = html_metric_count(html, level)
+        if metric is not None and metric != len(ledger_by_level[level]):
+            add_error(errors, f"HTML {level} 指标卡数量应按当前问题清单统计：指标为 {metric}，清单为 {len(ledger_by_level[level])}")
 
     for pattern, message in FORBIDDEN_PATTERNS:
         if pattern.search(html_text):
@@ -205,7 +299,22 @@ def validate_html(md: str, html: str) -> tuple[list[str], list[str]]:
         add_warn(warnings, "HTML 出现多处“首页摘要”，可能重复")
 
     if 'id="p0-section"' in html and not re.search(r"\bP0-\d{2,4}\b", html_text):
-        add_warn(warnings, "HTML 可能存在空 P0 区块；无 P0 时不要列空问题区")
+        add_error(errors, "HTML 存在空 P0 区块；无 P0 时不要列空问题区")
+
+    if re.search(r"\b本轮验收卡信息\b", html_text) or 'id="card-section"' in html or 'data-target="card-section"' in html:
+        add_error(errors, "HTML 不要输出独立的“本轮验收卡信息”章节或验收卡导航；相关信息应放在报告信息中")
+
+    if "table-status pass" in html and "pass-row" not in html:
+        add_error(errors, "HTML 通过行必须支持整行绿色文字样式：缺少 pass-row 样式或脚本标记")
+
+    for row_html in html_table_rows(html):
+        row_text = html_to_text(row_html)
+        if not CHECK_ID_RE.search(row_text) or not issue_ids(row_text):
+            continue
+        if "关联 P" not in row_text or "详见当前问题清单" not in row_text:
+            add_error(errors, "HTML 明细表引用问题编号时必须写“关联 Pxx-xx；详见当前问题清单”： " + row_text[:120])
+        if "建议：" in row_text:
+            add_error(errors, "HTML 明细表不得重复写整改建议，应只引用当前问题清单： " + row_text[:120])
 
     return errors, warnings
 
