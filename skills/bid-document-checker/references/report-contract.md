@@ -1,7 +1,7 @@
 # 投标文件检查报告契约
 
-版本：v1.0.3  
-适用：`bid-document-checker v3.0.4` 的 `formal_report` 输出 Markdown 报告和 HTML 用户版报告。
+版本：v1.0.4
+适用：`bid-document-checker v3.0.5` 的 `formal_report` 输出 Markdown 报告和 HTML 用户版报告。
 
 本文件只约束 `formal_report`。`lightweight_check` 不生成 Markdown 报告、HTML 用户版或本轮验收卡文件，不适用本契约；其结构化摘要字段由 `SKILL.md` 和 `references/acceptance-card.md` 约束。
 
