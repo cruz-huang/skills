@@ -56,8 +56,8 @@ FULL_STAGES = {
 
 REQUIRED_DETAIL_FIELDS = [
     "状态",
-    "实际检查内容",
-    "结论（位置/结果/风险/问题/建议）",
+    "检查范围",
+    "结果与证据",
 ]
 
 FORBIDDEN_PATTERNS = [
@@ -69,6 +69,12 @@ FORBIDDEN_PATTERNS = [
 CHECK_ID_RE = re.compile(r"\b(?:PRE|G\d{2}|D\d{2}|TENDER|PX)-\d{2,4}\b")
 ISSUE_ID_RE = re.compile(r"\bP[012]-\d{2,4}\b")
 ISSUE_LEVELS = ("P0", "P1", "P2")
+SCOPE_EVIDENCE_RE = re.compile(
+    r"(?:物理页|PDF\s*页|页脚页码)\s*\d|"
+    r"第\s*\d+\s*页|(?:^|[；;，,\s])页\s*\d+"
+)
+SCOPE_FINDING_RE = re.compile(r"触发证据|详见当前问题清单")
+MAX_SCOPE_LENGTH = 120
 
 
 def read_text(path: str | None) -> str:
@@ -122,17 +128,48 @@ def remove_current_issue_section(md: str) -> str:
     return md.replace(section, "", 1) if section else md
 
 
-def markdown_detail_rows(md: str) -> list[str]:
-    without_issues = remove_current_issue_section(md)
-    return [
-        line.strip()
-        for line in without_issues.splitlines()
-        if line.lstrip().startswith("|") and CHECK_ID_RE.search(line)
-    ]
+def markdown_row_cells(row: str) -> list[str]:
+    return [cell.strip() for cell in row.strip().strip("|").split("|")]
 
 
-def html_table_rows(html: str) -> list[str]:
-    return re.findall(r"(?is)<tr\b[^>]*>.*?</tr>", html)
+def markdown_detail_records(md: str) -> list[dict[str, str]]:
+    records: list[dict[str, str]] = []
+    headers: list[str] = []
+    for line in remove_current_issue_section(md).splitlines():
+        if not line.lstrip().startswith("|"):
+            continue
+        cells = markdown_row_cells(line)
+        if "检查ID" in cells and "结果与证据" in cells:
+            headers = cells
+            continue
+        if not headers or not CHECK_ID_RE.search(line) or len(cells) != len(headers):
+            continue
+        record = dict(zip(headers, cells))
+        record["__row"] = line.strip()
+        records.append(record)
+    return records
+
+
+def html_detail_records(html: str) -> list[dict[str, str]]:
+    records: list[dict[str, str]] = []
+    for table in re.findall(r"(?is)<table\b[^>]*>.*?</table>", html):
+        header_match = re.search(r"(?is)<thead\b[^>]*>.*?<tr\b[^>]*>(.*?)</tr>.*?</thead>", table)
+        if not header_match:
+            continue
+        headers = [html_to_text(cell).strip() for cell in re.findall(r"(?is)<th\b[^>]*>(.*?)</th>", header_match.group(1))]
+        if "检查ID" not in headers or "结果与证据" not in headers:
+            continue
+        body_match = re.search(r"(?is)<tbody\b[^>]*>(.*?)</tbody>", table)
+        if not body_match:
+            continue
+        for row in re.findall(r"(?is)<tr\b[^>]*>(.*?)</tr>", body_match.group(1)):
+            cells = [html_to_text(cell).strip() for cell in re.findall(r"(?is)<td\b[^>]*>(.*?)</td>", row)]
+            if len(cells) != len(headers):
+                continue
+            record = dict(zip(headers, cells))
+            record["__row"] = html_to_text(row)
+            records.append(record)
+    return records
 
 
 def html_metric_count(html: str, level: str) -> int | None:
@@ -174,6 +211,34 @@ def is_full_stage(stage: str) -> bool:
 
 def has_detail_rows(md: str) -> bool:
     return bool(CHECK_ID_RE.search(md))
+
+
+def validate_detail_record(
+    record: dict[str, str],
+    surface: str,
+    errors: list[str],
+    warnings: list[str],
+) -> None:
+    scope = record.get("检查范围", record.get("检查动作", "")).strip()
+    result = record.get("结果与证据", "").strip()
+    row = record.get("__row", "")
+    check_id = record.get("检查ID", "未知检查项")
+
+    if len(scope) > MAX_SCOPE_LENGTH:
+        add_warn(warnings, f"{surface} {check_id} 检查范围超过 {MAX_SCOPE_LENGTH} 字，应只保留核对对象和动作")
+    if ISSUE_ID_RE.search(scope):
+        add_error(errors, f"{surface} {check_id} 检查范围不得写问题编号，请移到结果与证据")
+    if SCOPE_EVIDENCE_RE.search(scope):
+        add_error(errors, f"{surface} {check_id} 检查范围不得写具体页码证据，请移到结果与证据")
+    if SCOPE_FINDING_RE.search(scope) or "建议：" in scope:
+        add_error(errors, f"{surface} {check_id} 检查范围混入了证据或建议")
+
+    row_issue_ids = issue_ids(row)
+    if row_issue_ids and "关联 P" not in result:
+        add_error(errors, f"{surface} {check_id} 问题项必须在结果与证据中写“关联 Pxx-xx”")
+    for marker in ("建议：", "风险：", "问题：", "详见当前问题清单"):
+        if marker in result:
+            add_error(errors, f"{surface} {check_id} 结果与证据不得重复展开问题、风险或建议")
 
 
 def validate_markdown(md: str, stage: str) -> tuple[list[str], list[str]]:
@@ -247,14 +312,8 @@ def validate_markdown(md: str, stage: str) -> tuple[list[str], list[str]]:
         if expected != actual:
             add_error(errors, f"Markdown {level} 数量应按当前问题清单统计：摘要写 {expected}，清单为 {actual}")
 
-    for row in markdown_detail_rows(md):
-        row_issue_ids = issue_ids(row)
-        if not row_issue_ids:
-            continue
-        if "关联 P" not in row or "详见当前问题清单" not in row:
-            add_error(errors, "Markdown 明细行引用问题编号时必须写“关联 Pxx-xx；详见当前问题清单”： " + row[:120])
-        if "建议：" in row:
-            add_error(errors, "Markdown 明细行不得重复写整改建议，应只引用当前问题清单： " + row[:120])
+    for record in markdown_detail_records(md):
+        validate_detail_record(record, "Markdown", errors, warnings)
 
     return errors, warnings
 
@@ -307,14 +366,13 @@ def validate_html(md: str, html: str) -> tuple[list[str], list[str]]:
     if "table-status pass" in html and "pass-row" not in html:
         add_error(errors, "HTML 通过行必须支持整行绿色文字样式：缺少 pass-row 样式或脚本标记")
 
-    for row_html in html_table_rows(html):
-        row_text = html_to_text(row_html)
-        if not CHECK_ID_RE.search(row_text) or not issue_ids(row_text):
-            continue
-        if "关联 P" not in row_text or "详见当前问题清单" not in row_text:
-            add_error(errors, "HTML 明细表引用问题编号时必须写“关联 Pxx-xx；详见当前问题清单”： " + row_text[:120])
-        if "建议：" in row_text:
-            add_error(errors, "HTML 明细表不得重复写整改建议，应只引用当前问题清单： " + row_text[:120])
+    if "table-status" in html:
+        for marker in ("compact-check-table", "check-summary", "row-evidence"):
+            if marker not in html:
+                add_error(errors, f"HTML 缺少精简明细表支持：{marker}")
+
+    for record in html_detail_records(html):
+        validate_detail_record(record, "HTML", errors, warnings)
 
     return errors, warnings
 
