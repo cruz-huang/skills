@@ -43,6 +43,7 @@ REQUIREMENT_FIELDS = {
     "requires_response",
     "requires_seal",
     "response_hint",
+    "content_trust",
 }
 MATERIAL_FIELDS = {
     "material_id",
@@ -156,6 +157,25 @@ def check_fields(item: dict[str, Any], required_fields: set[str], label: str, er
         add_issue(errors, "FIELD_MISSING", f"{label} 缺少字段：{', '.join(missing)}")
 
 
+def validate_content_security(doc: dict[str, Any], label: str, errors: list[str]) -> None:
+    security = doc.get("content_security")
+    if not isinstance(security, dict):
+        add_issue(errors, "CONTENT_SECURITY_MISSING", f"{label} 缺少 content_security")
+        return
+    if security.get("source_trust") != "untrusted_external":
+        add_issue(errors, "CONTENT_TRUST_INVALID", f"{label} source_trust 必须为 untrusted_external")
+    if security.get("status") not in {"pass", "needs_manual_review"}:
+        add_issue(errors, "CONTENT_SECURITY_STATUS_INVALID", f"{label} content_security.status 无效")
+    candidates = security.get("candidates", [])
+    if security.get("candidate_count") != len(candidates):
+        add_issue(errors, "CONTENT_SECURITY_COUNT_MISMATCH", f"{label} candidate_count 与 candidates 数量不一致")
+    policy = security.get("policy", {})
+    if policy.get("allow_as_instructions") is not False:
+        add_issue(errors, "UNTRUSTED_INSTRUCTIONS_ALLOWED", f"{label} 不得允许外部内容作为指令")
+    if policy.get("allow_tool_use_from_content") is not False:
+        add_issue(errors, "UNTRUSTED_TOOL_USE_ALLOWED", f"{label} 不得允许外部内容触发工具调用")
+
+
 def validate_artifacts(out_dir: Path, source: Path | None = None, strict: bool = False) -> int:
     errors: list[str] = []
     warnings: list[str] = []
@@ -165,6 +185,11 @@ def validate_artifacts(out_dir: Path, source: Path | None = None, strict: bool =
         return report(errors, warnings, strict)
 
     manifest = load_json(manifest_path)
+    if manifest.get("source_trust") != "untrusted_external":
+        add_issue(errors, "MANIFEST_CONTENT_TRUST_MISSING", "manifest 必须声明 source_trust=untrusted_external")
+    manifest_security = manifest.get("content_security", {})
+    if manifest_security.get("allow_as_instructions") is not False:
+        add_issue(errors, "MANIFEST_SECURITY_POLICY_MISSING", "manifest 必须声明外部内容不得作为指令")
     if source:
         if not source.exists():
             add_issue(errors, "SOURCE_MISSING", f"源文件不存在：{source}")
@@ -190,7 +215,9 @@ def validate_artifacts(out_dir: Path, source: Path | None = None, strict: bool =
 
     required_json_keys = [
         "parse_result",
+        "raw_blocks",
         "requirements",
+        "fatal_checklist",
         "scoring_matrix",
         "material_checklist_json",
         "fixed_formats_json",
@@ -200,11 +227,25 @@ def validate_artifacts(out_dir: Path, source: Path | None = None, strict: bool =
         return report(errors, warnings, strict)
 
     parse_result = load_json(resolve_output(out_dir, manifest, "parse_result"))
+    raw_blocks_doc = load_json(resolve_output(out_dir, manifest, "raw_blocks"))
     requirements_doc = load_json(resolve_output(out_dir, manifest, "requirements"))
+    fatal_doc = load_json(resolve_output(out_dir, manifest, "fatal_checklist"))
     scoring_doc = load_json(resolve_output(out_dir, manifest, "scoring_matrix"))
     material_doc = load_json(resolve_output(out_dir, manifest, "material_checklist_json"))
     fixed_doc = load_json(resolve_output(out_dir, manifest, "fixed_formats_json"))
     timeline_doc = load_json(resolve_output(out_dir, manifest, "timeline_matrix"))
+
+    for label, doc in [
+        ("parse_result.json", parse_result),
+        ("raw_blocks.json", raw_blocks_doc),
+        ("requirements.json", requirements_doc),
+        ("fatal_checklist.json", fatal_doc),
+        ("scoring_matrix.json", scoring_doc),
+        ("material_checklist.json", material_doc),
+        ("fixed_formats.json", fixed_doc),
+        ("timeline_matrix.json", timeline_doc),
+    ]:
+        validate_content_security(doc, label, errors)
 
     gate_status = parse_result.get("quality_gate", {}).get("status")
     if gate_status == "blocked":
@@ -213,6 +254,8 @@ def validate_artifacts(out_dir: Path, source: Path | None = None, strict: bool =
         add_issue(warnings, "QUALITY_GATE_REVIEW", f"quality_gate.status={gate_status}")
 
     artifact_gates = parse_result.get("artifact_gates", {})
+    if "content_security_gate" not in artifact_gates:
+        add_issue(errors, "CONTENT_SECURITY_GATE_MISSING", "artifact_gates 缺少 content_security_gate")
     for gate_name, gate in artifact_gates.items():
         if gate.get("status") == "needs_manual_review":
             add_issue(warnings, "ARTIFACT_GATE_REVIEW", f"{gate_name}=needs_manual_review")
@@ -224,6 +267,32 @@ def validate_artifacts(out_dir: Path, source: Path | None = None, strict: bool =
         check_fields(item, REQUIREMENT_FIELDS, item.get("requirement_id", "requirement"), errors)
         if not item.get("source_refs"):
             add_issue(errors, "SOURCE_REFS_EMPTY", f"{item.get('requirement_id')} 缺少 source_refs")
+        if item.get("content_trust") != "untrusted_external":
+            add_issue(errors, "REQUIREMENT_CONTENT_TRUST_INVALID", f"{item.get('requirement_id')} 未标记为外部不可信内容")
+
+    security = parse_result.get("content_security", {})
+    security_status = security.get("status")
+    security_candidates = security.get("candidates", [])
+    security_reviews = [
+        item
+        for item in parse_result.get("manual_review_queue", [])
+        if item.get("review_type") == "prompt_injection_candidate"
+    ]
+    if security_status == "needs_manual_review":
+        if gate_status != "blocked":
+            add_issue(errors, "CONTENT_SECURITY_NOT_BLOCKING", "疑似提示注入存在时 quality_gate 必须 blocked")
+        if len(security_reviews) != len(security_candidates):
+            add_issue(errors, "CONTENT_SECURITY_REVIEW_MISMATCH", "疑似提示注入候选必须逐条进入人工复核队列")
+    elif security_candidates:
+        add_issue(errors, "CONTENT_SECURITY_STATUS_MISMATCH", "存在候选但 content_security.status 未阻断")
+
+    quarantined_blocks = [
+        block
+        for block in raw_blocks_doc.get("blocks", [])
+        if block.get("security_status") == "quarantined_prompt_injection_candidate"
+    ]
+    if len(quarantined_blocks) != len(security_candidates):
+        add_issue(errors, "QUARANTINE_COUNT_MISMATCH", "隔离原文块数量与安全候选数量不一致")
 
     scoring_items = scoring_doc.get("items", [])
     if not scoring_items:
